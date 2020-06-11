@@ -3,7 +3,7 @@ This is a sample class for a model. You may choose to use it as-is or make any c
 This has been provided just to give you an idea of how to structure your model class.
 '''
 
-class Model_X:
+class FaceDetection:
     '''
     Class for the Face Detection Model.
     '''
@@ -11,6 +11,11 @@ class Model_X:
         '''
         TODO: Use this to set your instance variables.
         '''
+        self.model_weights = model_name + '.bin'
+        self.model_structure = model_name + '.xml'
+        self.device = device
+        self.net = None
+
         raise NotImplementedError
 
     def load_model(self):
