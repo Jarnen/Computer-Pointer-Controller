@@ -44,12 +44,26 @@ class FaceDetection:
 
         return
 
-    def predict(self, image):
+    def predict(self, image, weight, height):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        raise NotImplementedError
+
+        input_dict={self.input_name:image}
+        res = self.net.infer(input_dict)
+        res = res[self.output_name]
+        data = res[0][0]
+        coords = []
+        for number, proposal in enumerate(data):
+            if proposal[2] > 0.6:
+                xmin = np.int(weight * proposal[3])
+                ymin = np.int(height * proposal[4])
+                xmax = np.int(weight * proposal[5])
+                ymax = np.int(height * proposal[6])
+                coords.append([xmin,ymin,xmax,ymax])
+        
+        return coords
 
     def check_model(self):
         raise NotImplementedError
