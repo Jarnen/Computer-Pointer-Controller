@@ -11,7 +11,24 @@ class GazeEstimation:
         '''
         TODO: Use this to set your instance variables.
         '''
-        raise NotImplementedError
+        self.model_weights = model_name + '.bin'
+        self.model_structure = model_name + '.xml'
+        self.device = device
+        self.extension = extension
+        self.net = None
+
+        try:
+            self.model = IENetwork(self.model_structure, self.model_weights)
+        except Exception as e:
+            raise ValueError("Could not initialised the network. Have you enterred the correct model path?")
+
+        assert len(self.model.inputs) == 1, "Expected 1 input blob"
+        assert len(self.model.outputs) == 1, "Expected 1 output blob"
+
+        self.input_blob = next(iter(self.model.inputs)) 
+        self.output_blob = next(iter(self.model.outputs))
+        self.input_shape = self.model.inputs[self.input_blob].shape
+        self.output_shape = self.model.outputs[self.output_blob].shape
 
     def load_model(self):
         '''
