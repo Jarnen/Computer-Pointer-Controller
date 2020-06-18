@@ -57,9 +57,15 @@ class LandmarksDetection:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
+        assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
+        assert image.shape[0] == 1
+        assert image.shape[1] == 3
+        pr_image = cv2.resize(image, (self.input_shape[3], self.input_shape[2]))
+        pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
+        pr_image = pr_image.reshape(1, *pr_image.shape)
         
-        raise NotImplementedError
-
+        return pr_image
+        
     def preprocess_output(self, outputs):
         '''
         Before feeding the output of this model to the next model,
