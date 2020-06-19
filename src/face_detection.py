@@ -50,20 +50,24 @@ class FaceDetection:
         This method is meant for running predictions on the input image.
         '''
 
+        assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
+        assert image.shape[0] == 1
+        assert image.shape[1] == 3
+
         input_dict={self.input_name:image}
         res = self.net.infer(input_dict)
         res = res[self.output_name]
-        data = res[0][0]
-        coords = []
-        for number, proposal in enumerate(data):
+        input_data = res[0][0]
+        rois = []
+        for number, proposal in enumerate(input_data):
             if proposal[2] > 0.6:
                 xmin = np.int(weight * proposal[3])
                 ymin = np.int(height * proposal[4])
                 xmax = np.int(weight * proposal[5])
                 ymax = np.int(height * proposal[6])
-                coords.append([xmin,ymin,xmax,ymax])
+                rois.append([xmin,ymin,xmax,ymax])
         
-        return coords
+        return rois
 
     def check_model(self):
         raise NotImplementedError
@@ -73,18 +77,23 @@ class FaceDetection:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
-        assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
-        assert image.shape[0] == 1
-        assert image.shape[1] == 3
+
         pr_image = cv2.resize(image, (self.input_shape[3], self.input_shape[2]))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
         pr_image = pr_image.reshape(1, *pr_image.shape)
     
         return pr_image
 
-    def preprocess_output(self, outputs):
+    def preprocess_output(self, image, rois):
         '''
-        Before feeding the output of this model to the next model,
-        you might have to preprocess the output. This function is where you can do that.
+        Crops the region of interest (face) from the image and returns it.
+
         '''
-        raise NotImplementedError
+        assert len(rois) == 1, "More than one face detected in the frame."
+        cropped_roi = image[rois[0][0]: rois[0][2], rois[0][1]:rois[0][3]]
+
+        return cropped_roi
+        
+        
+
+
