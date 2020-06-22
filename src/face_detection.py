@@ -44,7 +44,7 @@ class FaceDetection:
 
         return
 
-    def predict(self, image, weight, height):
+    def predict(self, image, width, height):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
@@ -54,16 +54,16 @@ class FaceDetection:
         assert image.shape[0] == 1
         assert image.shape[1] == 3
 
-        input_dict={self.input_name:image}
+        input_dict={self.input_blob:image}
         res = self.net.infer(input_dict)
-        res = res[self.output_name]
+        res = res[self.output_blob]
         input_data = res[0][0]
         rois = []
         for number, proposal in enumerate(input_data):
             if proposal[2] > 0.6:
-                xmin = np.int(weight * proposal[3])
+                xmin = np.int(width * proposal[3])
                 ymin = np.int(height * proposal[4])
-                xmax = np.int(weight * proposal[5])
+                xmax = np.int(width * proposal[5])
                 ymax = np.int(height * proposal[6])
                 rois.append([xmin,ymin,xmax,ymax])
         
@@ -90,6 +90,7 @@ class FaceDetection:
 
         '''
         assert len(rois) == 1, "More than one face detected in the frame."
+
         cropped_roi = image[rois[0][0]: rois[0][2], rois[0][1]:rois[0][3]]
 
         return cropped_roi

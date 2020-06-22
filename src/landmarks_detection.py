@@ -75,13 +75,13 @@ class LandmarksDetection:
         
         return pr_image
 
-    def preprocess_output(self, image, result):
+    def preprocess_output(self, face_image, result):
         '''
         Returns the (x,y) coordinates of right and left eye respectively
         '''
         assert result.size == 10, "Result set is not valid"
 
-        iw, ih = image.shape[:-1]
+        iw, ih = face_image.shape[:-1]
 
         right_eye = (np.int(ih*result[0][0]), np.int(iw*result[0][1]))
         left_eye = (np.int(ih*result[0][2]), np.int(iw*result[0][3]))
