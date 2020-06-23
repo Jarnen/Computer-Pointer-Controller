@@ -83,9 +83,9 @@ class HeadPoseEstimation:
         angle_p_fc = outputs.get('angle_p_fc')
         angle_r_fc = outputs.get('angle_r_fc')
 
-        angle_y_fc = angle_y_fc[0][0]
-        angle_p_fc = angle_p_fc[0][0]
-        angle_r_fc = angle_r_fc[0][0]
+        yaw = angle_y_fc[0][0]
+        pitch = angle_p_fc[0][0]
+        roll = angle_r_fc[0][0]
 
-        return angle_y_fc, angle_p_fc, angle_r_fc
+        return yaw, pitch, roll
         

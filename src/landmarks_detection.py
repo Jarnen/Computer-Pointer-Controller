@@ -10,14 +10,14 @@ class LandmarksDetection:
     '''
     Class for the Face Detection Model.
     '''
-    def __init__(self, model_name, device='CPU', extensions=None, threshold):
+    def __init__(self, model_name, device, extensions, threshold):
         '''
         TODO: Use this to set your instance variables.
         '''
         self.model_weights = model_name + '.bin'
         self.model_structure = model_name + '.xml'
         self.device = device
-        self.extension = extension
+        self.extension = extensions
         self.net = None
 
         try:
@@ -54,9 +54,9 @@ class LandmarksDetection:
         assert image.shape[0] == 1
         assert image.shape[1] == 3
 
-        input_dict={self.input_name:image}
+        input_dict={self.input_blob:image}
         result = self.net.infer(input_dict)
-        result = result[self.output_name]
+        result = result[self.output_blob]
 
         return result
 
@@ -75,15 +75,29 @@ class LandmarksDetection:
         
         return pr_image
 
-    def preprocess_output(self, face_image, result):
+    def preprocess_output(self, image, result):
         '''
         Returns the (x,y) coordinates of right and left eye respectively
         '''
-        assert result.size == 10, "Result set is not valid"
-
-        iw, ih = face_image.shape[:-1]
-
+        assert result.size == 10, "Result passed in is not of size 10"
+        
+        iw, ih = image.shape[:-1]
+        
         right_eye = (np.int(ih*result[0][0]), np.int(iw*result[0][1]))
         left_eye = (np.int(ih*result[0][2]), np.int(iw*result[0][3]))
-        
-        return right_eye, left_eye
+
+        scale = 50
+        right_eye_xmin = right_eye[0] - scale
+        right_eye_ymin = right_eye[1] - scale
+        right_eye_xmax = right_eye[0] + scale
+        right_eye_ymax = right_eye[1] + scale
+
+        left_eye_xmin = left_eye[0] - scale
+        left_eye_ymin = left_eye[1] - scale
+        left_eye_xmax = left_eye[0] + scale
+        left_eye_ymax = left_eye[1] + scale
+
+        crop_left_eye = image[left_eye_ymin:left_eye_ymax, left_eye_xmin:left_eye_xmax]
+        crop_right_eye = image[right_eye_ymin:right_eye_ymax, right_eye_xmin:right_eye_xmax]
+
+        return crop_right_eye, crop_left_eye

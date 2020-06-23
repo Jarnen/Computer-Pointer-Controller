@@ -4,19 +4,20 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 from openvino.inference_engine import IENetwork, IECore
 import cv2
+import numpy as np
 
-class FaceDetection:
+class FaceDetection():
     '''
     Class for the Face Detection Model.
     '''
-    def __init__(self, model_name, device='CPU', extensions=None, threshold):
+    def __init__(self, model_name, device, extensions, threshold):
         '''
         TODO: Use this to set your instance variables.
         '''
         self.model_weights = model_name + '.bin'
         self.model_structure = model_name + '.xml'
         self.device = device
-        self.extension = extension
+        self.extension = extensions
         self.net = None
 
         try:
