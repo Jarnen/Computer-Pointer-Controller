@@ -9,7 +9,7 @@ class HeadPoseEstimation:
     '''
     Class for the Face Detection Model.
     '''
-    def __init__(self, model_name, device='CPU', extensions=None):
+    def __init__(self, model_name, device, extensions=None):
         '''
         TODO: Use this to set your instance variables.
         '''
@@ -28,7 +28,7 @@ class HeadPoseEstimation:
         assert len(self.model.outputs) == 1, "Expected 1 output blob"
 
         self.input_blob = next(iter(self.model.inputs)) 
-        self.output_blob = next(iter(self.model.outputs))
+        self.output_blob = next(iter(iter(self.model.outputs)))
         self.input_shape = self.model.inputs[self.input_blob].shape
         self.output_shape = self.model.outputs[self.output_blob].shape
 
@@ -49,18 +49,16 @@ class HeadPoseEstimation:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
+        self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
         assert image.shape[1] == 3
 
         input_dict={self.input_blob:image}
         results = self.net.infer(input_dict)
+        yaw, pitch, roll = self.preprocess_output(results)
         
-        return results
-        
-
-    def check_model(self):
-        raise NotImplementedError
+        return yaw, pitch, roll
 
     def preprocess_input(self, image):
         '''
