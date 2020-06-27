@@ -12,10 +12,10 @@ class GazeEstimation:
     '''
     Class for the Face Detection Model.
     '''
-    def __init__(self, model_name, device='CPU', extensions=None):
-        '''
-        TODO: Use this to set your instance variables.
-        '''
+    def __init__(self, model_name, device, extensions):
+        """
+        Set the instance variables
+        """
         self.model_weights = model_name + '.bin'
         self.model_structure = model_name + '.xml'
         self.device = device

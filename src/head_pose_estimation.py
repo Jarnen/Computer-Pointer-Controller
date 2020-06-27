@@ -4,6 +4,7 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 from openvino.inference_engine import IENetwork, IECore
 import cv2
+import numpy as np
 
 class HeadPoseEstimation:
     '''
@@ -56,9 +57,9 @@ class HeadPoseEstimation:
 
         input_dict={self.input_blob:image}
         results = self.net.infer(input_dict)
-        yaw, pitch, roll = self.preprocess_output(results)
+        output = self.preprocess_output(results)
         
-        return yaw, pitch, roll
+        return output
 
     def preprocess_input(self, image):
         '''
@@ -85,5 +86,7 @@ class HeadPoseEstimation:
         pitch = angle_p_fc[0][0]
         roll = angle_r_fc[0][0]
 
-        return yaw, pitch, roll
+        output = np.array([[yaw, pitch, roll]])
+
+        return output
         

@@ -45,12 +45,13 @@ class FaceDetection():
 
         return
 
-    def predict(self, image, width, height):
+    def predict(self, image):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-
+        width, height = image.shape[:-1]
+        self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
         assert image.shape[1] == 3
@@ -60,18 +61,14 @@ class FaceDetection():
         res = res[self.output_blob]
         input_data = res[0][0]
         rois = []
-        for number, proposal in enumerate(input_data):
+        for _, proposal in enumerate(input_data):
             if proposal[2] > 0.6:
                 xmin = np.int(width * proposal[3])
                 ymin = np.int(height * proposal[4])
                 xmax = np.int(width * proposal[5])
                 ymax = np.int(height * proposal[6])
                 rois.append([xmin,ymin,xmax,ymax])
-        
         return rois
-
-    def check_model(self):
-        raise NotImplementedError
 
     def preprocess_input(self, image):
         '''
