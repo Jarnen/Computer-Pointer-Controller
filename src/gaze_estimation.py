@@ -1,7 +1,12 @@
+
+from openvino.inference_engine import IENetwork, IECore 
+import cv2
+
 '''
 This is a sample class for a model. You may choose to use it as-is or make any changes to it.
 This has been provided just to give you an idea of how to structure your model class.
 '''
+
 
 class GazeEstimation:
     '''
@@ -14,7 +19,7 @@ class GazeEstimation:
         self.model_weights = model_name + '.bin'
         self.model_structure = model_name + '.xml'
         self.device = device
-        self.extension = extension
+        self.extension = extensions
         self.net = None
 
         try:
@@ -31,37 +36,61 @@ class GazeEstimation:
         self.output_shape = self.model.outputs[self.output_blob].shape
 
     def load_model(self):
-        '''
-        TODO: You will need to complete this method.
-        This method is for loading the model to the device specified by the user.
-        If your model requires any Plugins, this is where you can load them.
-        '''
+        """
+        Loads the model 
+        """
         core = IECore()
         core.add_extension(self.extension)
-        self.net = core.load_network(network=self.model, device_name=self.device)edError
+        self.net = core.load_network(network=self.model, device_name=self.device)
 
-        return
+    def predict(self, inputs):
+        """
+        Runs inference and returns the raw results
 
-    def predict(self, image):
-        '''
-        TODO: You will need to complete this method.
-        This method is meant for running predictions on the input image.
-        '''
-        raise NotImplementedError
+        Args:
+        inputs: input dictionary in the format {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
+        """
+        result = self.net.infer(inputs)
+
+        return result
 
     def check_model(self):
         raise NotImplementedError
 
-    def preprocess_input(self, image):
-    '''
-    Before feeding the data into the model for inference,
-    you might have to preprocess it. This function is where you can do that.
-    '''
-        raise NotImplementedError
+    def preprocess_input(self, left_eye_image, right_eye_image, head_pose_angles):
+        """
+        Returns input dictionary for inferencing
+
+        Args:
+        left_eye_image: cropped left eye image in the format [H,W,C].
+        right_eye_image: cropped right eye image in the format [H,W,C].
+        head_pose_angles: head pose angles in the format [1,3].
+        """
+        left_eye_image = self.preprocess_image(left_eye_image)
+        right_eye_image = self.preprocess_image(right_eye_image)
+
+        inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
+
+        return inputs
+
+
+    @staticmethod
+    def preprocess_image(image):
+
+        pr_image = cv2.resize(image, (60, 60))
+        pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
+        pr_image = pr_image.reshape(1, *pr_image.shape)
+
+        return pr_image
 
     def preprocess_output(self, outputs):
-    '''
-    Before feeding the output of this model to the next model,
-    you might have to preprocess the output. This function is where you can do that.
-    '''
-        raise NotImplementedError
+        """
+        Returns the x and y points from the gaze vector
+
+        Args:
+        outputs: inference result from the inference 
+        """
+        x = outputs.get('gaze_vector')[0][0]
+        y = outputs.get('gaze_vector')[0][1]
+
+        return x,y
