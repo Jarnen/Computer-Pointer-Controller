@@ -27,7 +27,7 @@ class GazeEstimation:
         except Exception as e:
             raise ValueError("Could not initialised the network. Have you enterred the correct model path?")
 
-        assert len(self.model.inputs) == 1, "Expected 1 input blob"
+        assert len(self.model.inputs) == 3, "Expected 3 input blob"
         assert len(self.model.outputs) == 1, "Expected 1 output blob"
 
         self.input_blob = next(iter(self.model.inputs)) 
@@ -40,23 +40,32 @@ class GazeEstimation:
         Loads the model 
         """
         core = IECore()
-        core.add_extension(self.extension)
-        self.net = core.load_network(network=self.model, device_name=self.device)
+        #core.add_extension(self.extension, self.device)
+        self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
-    def predict(self, inputs):
+    def predict(self, left_eye_image, right_eye_image, head_pose_angles):
         """
         Runs inference and returns the raw results
 
         Args:
         inputs: input dictionary in the format {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
         """
+
+        left_eye_image = self.preprocess_image(left_eye_image)
+        right_eye_image = self.preprocess_image(right_eye_image)
+
+        inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
+
         result = self.net.infer(inputs)
 
-        return result
+        x, y = self.preprocess_output(result)
+        
+        return x, y  
 
     def check_model(self):
         raise NotImplementedError
-
+     
+    '''
     def preprocess_input(self, left_eye_image, right_eye_image, head_pose_angles):
         """
         Returns input dictionary for inferencing
@@ -66,16 +75,16 @@ class GazeEstimation:
         right_eye_image: cropped right eye image in the format [H,W,C].
         head_pose_angles: head pose angles in the format [1,3].
         """
+
         left_eye_image = self.preprocess_image(left_eye_image)
         right_eye_image = self.preprocess_image(right_eye_image)
 
         inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
 
         return inputs
+        '''
 
-
-    @staticmethod
-    def preprocess_image(image):
+    def preprocess_image(self, image):
 
         pr_image = cv2.resize(image, (60, 60))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW

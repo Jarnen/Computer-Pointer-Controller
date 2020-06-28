@@ -40,8 +40,8 @@ class LandmarksDetection:
         If your model requires any Plugins, this is where you can load them.
         '''
         core = IECore()
-        core.add_extension(self.extension)
-        self.net = core.load_network(network=self.model, device_name=self.device)
+        #core.add_extension(self.extension, self.device)
+        self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
         return
 
@@ -50,6 +50,7 @@ class LandmarksDetection:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
+        image = self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
         assert image.shape[1] == 3
@@ -100,4 +101,4 @@ class LandmarksDetection:
         crop_left_eye = image[left_eye_ymin:left_eye_ymax, left_eye_xmin:left_eye_xmax]
         crop_right_eye = image[right_eye_ymin:right_eye_ymax, right_eye_xmin:right_eye_xmax]
 
-        return crop_right_eye, crop_left_eye
+        return crop_left_eye, crop_right_eye

@@ -40,8 +40,8 @@ class FaceDetection():
         If your model requires any Plugins, this is where you can load them.
         '''
         core = IECore()
-        core.add_extension(self.extension)
-        self.net = core.load_network(network=self.model, device_name=self.device)
+        #core.add_extension(self.extension, self.device)
+        self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
         return
 
@@ -51,7 +51,7 @@ class FaceDetection():
         This method is meant for running predictions on the input image.
         '''
         width, height = image.shape[:-1]
-        self.preprocess_input(image)
+        image = self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
         assert image.shape[1] == 3

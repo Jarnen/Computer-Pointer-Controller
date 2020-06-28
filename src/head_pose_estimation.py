@@ -26,7 +26,7 @@ class HeadPoseEstimation:
             raise ValueError("Could not initialised the network. Have you enterred the correct model path?: {}".format(e))
 
         assert len(self.model.inputs) == 1, "Expected 1 input blob"
-        assert len(self.model.outputs) == 1, "Expected 1 output blob"
+        assert len(self.model.outputs) == 3, "Expected 3 output blob"
 
         self.input_blob = next(iter(self.model.inputs)) 
         self.output_blob = next(iter(iter(self.model.outputs)))
@@ -40,8 +40,8 @@ class HeadPoseEstimation:
         If your model requires any Plugins, this is where you can load them.
         '''
         core = IECore()
-        core.add_extension(self.extension)
-        self.net = core.load_network(network=self.model, device_name=self.device)
+        #core.add_extension(self.extension, self.device)
+        self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
         return
 
@@ -50,7 +50,7 @@ class HeadPoseEstimation:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        self.preprocess_input(image)
+        image = self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
         assert image.shape[1] == 3

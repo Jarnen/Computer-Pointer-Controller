@@ -22,7 +22,7 @@ def build_argparser():
     """
     parser = ArgumentParser()
 
-    parser.add_argument('-i', '--input', metavar='PATH', default='cam',
+    parser.add_argument('-i', '--input_type', metavar='PATH', default='cam',
                                   help="(optional) Path to the input video " \
                                       "('cam' for camera, default)")
     parser.add_argument('-f', '--input_file', metavar='PATH', default=None,
@@ -58,11 +58,12 @@ class ProcessFrame:
         self.landmarks_detector = LandmarksDetection(args.m_ld, args.device, args.lib, args.threshold)
         self.head_pose_estimation = HeadPoseEstimation(args.m_pe, args.device, args.threshold)
         self.gaze_estimation = GazeEstimation(args.m_ge,args.device, args.threshold)
-        self.mouse_controller = MouseController(0.5, 0.5)
+        self.mouse_controller = MouseController('high', 'fast')
 
         self.face_detector.load_model()
         self.landmarks_detector.load_model()
         self.head_pose_estimation.load_model()
+        self.gaze_estimation.load_model()
 
     def process(self, frame):
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
@@ -76,9 +77,9 @@ class ProcessFrame:
 
         head_pose_angles = self.head_pose_estimation.predict(face)
         
-        gaze_estimation_inputs = self.gaze_estimation.preprocess_input(left_eye_image, right_eye_image, head_pose_angles)
-        gaze_result = self.gaze_estimation.predict(gaze_estimation_inputs)
-        x, y = self.gaze_estimation.preprocess_output(gaze_result)
+        x, y = self.gaze_estimation.predict(left_eye_image, right_eye_image, head_pose_angles)
+        #gaze_result = self.gaze_estimation.predict(gaze_estimation_inputs)
+        # x, y = self.gaze_estimation.predict(gaze_estimation_results)
 
         self.mouse_controller.move(x,y)
 
@@ -97,6 +98,7 @@ class Visualize:
         """
         Detects and returns face coordinates on the frame
         """
+
 
     def draw_face_roi(self, frame, roi):
         """
