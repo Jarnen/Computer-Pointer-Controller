@@ -1,7 +1,7 @@
 
 from openvino.inference_engine import IENetwork, IECore 
 import cv2
-
+import logging as log
 '''
 This is a sample class for a model. You may choose to use it as-is or make any changes to it.
 This has been provided just to give you an idea of how to structure your model class.
@@ -40,7 +40,6 @@ class GazeEstimation:
         Loads the model 
         """
         core = IECore()
-        #core.add_extension(self.extension, self.device)
         self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
     def predict(self, left_eye_image, right_eye_image, head_pose_angles):
@@ -56,8 +55,10 @@ class GazeEstimation:
 
         inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
 
-        result = self.net.infer(inputs)
-
+        # infer_request_handle = self.net.start_async(request_id=0, inputs=inputs)
+        # #infer_status = infer_request_handle.wait()
+        # result = infer_request_handle.outputs
+        result  = self.net.infer(inputs)
         x, y = self.preprocess_output(result)
         
         return x, y  
@@ -85,7 +86,8 @@ class GazeEstimation:
         '''
 
     def preprocess_image(self, image):
-
+        image_shape = image.shape
+        log.info("Image shape: {}".format(image_shape))
         pr_image = cv2.resize(image, (60, 60))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
         pr_image = pr_image.reshape(1, *pr_image.shape)

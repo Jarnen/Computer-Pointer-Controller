@@ -87,7 +87,7 @@ class FaceDetection():
         Crops the region of interest (face) from the image and returns it.
 
         '''
-        assert len(rois) == 1, "More than one face detected in the frame."
+        assert len(rois) != 0, "No face detected in the frame."
 
         cropped_roi = image[rois[0][0]: rois[0][2], rois[0][1]:rois[0][3]]
 

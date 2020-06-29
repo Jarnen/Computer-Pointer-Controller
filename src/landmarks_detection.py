@@ -87,7 +87,7 @@ class LandmarksDetection:
         right_eye = (np.int(ih*result[0][0]), np.int(iw*result[0][1]))
         left_eye = (np.int(ih*result[0][2]), np.int(iw*result[0][3]))
 
-        scale = 50
+        scale = 20
         right_eye_xmin = right_eye[0] - scale
         right_eye_ymin = right_eye[1] - scale
         right_eye_xmax = right_eye[0] + scale

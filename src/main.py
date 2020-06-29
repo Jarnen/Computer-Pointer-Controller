@@ -11,6 +11,7 @@ from face_detection import FaceDetection
 from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
 from gaze_estimation import GazeEstimation
+import time
 
 DEVICE_TYPES = ['CPU', 'GPU', 'FPGA', 'MYRAID', 'HETERO']
 
@@ -22,12 +23,12 @@ def build_argparser():
     """
     parser = ArgumentParser()
 
-    parser.add_argument('-i', '--input_type', metavar='PATH', default='cam',
+    parser.add_argument('-i', '--input_type', metavar='PATH', default=None,
                                   help="(optional) Path to the input video " \
                                       "('cam' for camera, default)")
     parser.add_argument('-f', '--input_file', metavar='PATH', default=None,
-                                  help="(optional) Path to the input file " \
-                                      "(None for input file, default)")
+                                   help="(optional) Path to the input file " \
+                                       "(None for input file, default)")
     parser.add_argument('-m_fd', metavar="PATH", default="", required=True,
                         help="Path to the Face Detection model XML file")
     parser.add_argument('-m_ld', metavar="PATH", default="", required=True,
@@ -43,7 +44,7 @@ def build_argparser():
     parser.add_argument('-l', '--lib', metavar="PATH", default="",
                        help="(optional) For targeted device custom layers, if any. " \
                        "Path to a shared library with custom layers implementations")
-    parser.add_argument('-t','--threshold', metavar='[0..1]', type=float, default=0.6,
+    parser.add_argument('-t','--threshold', metavar='[0..1]', type=float, default=0.5,
                        help="(optional) Probability threshold for face detections" \
                        "(default: %(default)s)")
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -81,7 +82,7 @@ class ProcessFrame:
         #gaze_result = self.gaze_estimation.predict(gaze_estimation_inputs)
         # x, y = self.gaze_estimation.predict(gaze_estimation_results)
 
-        self.mouse_controller.move(x,y)
+        self.mouse_controller.move(y,x)
 
 
 class Visualize:
@@ -91,8 +92,38 @@ class Visualize:
     def __init__(self, args):
         """
         Initialise the variables
+        
         """
+        self.face_detector = FaceDetection(args.m_fd, args.device, args.lib, args.threshold)
+        self.landmarks_detector = LandmarksDetection(args.m_ld, args.device, args.lib, args.threshold)
+        self.head_pose_estimation = HeadPoseEstimation(args.m_pe, args.device, args.threshold)
+        self.gaze_estimation = GazeEstimation(args.m_ge,args.device, args.threshold)
+        self.mouse_controller = MouseController('medium', 'fast')
+
+        self.face_detector.load_model()
+        self.landmarks_detector.load_model()
+        self.head_pose_estimation.load_model()
+        self.gaze_estimation.load_model()
+
+        self.feed = InputFeeder(args.input_type, args.input_file)
         self.process_frame = ProcessFrame(args)
+
+    
+    def process(self, frame):
+        assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
+        assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
+
+        rois = self.face_detector.predict(frame)
+        face = self.face_detector.preprocess_output(frame, rois)
+        
+        landmarks = self.landmarks_detector.predict(face)
+        right_eye_image, left_eye_image = self.landmarks_detector.preprocess_output(face, landmarks)
+
+        head_pose_angles = self.head_pose_estimation.predict(face)
+        
+        x, y = self.gaze_estimation.predict(left_eye_image, right_eye_image, head_pose_angles)
+
+        self.mouse_controller.move(x,y)
 
     def frame_detector(self, frame):
         """
@@ -104,7 +135,9 @@ class Visualize:
         """
         Draw the face ROI border
         """
-        cv2.rectangle(frame, (roi[0], roi[1]), (roi[2], roi[3]), (0,220,0) , 2)
+        frame = cv2.rectangle(frame, (roi[0], roi[1]), (roi[2], roi[3]), (0,220,0) , 2)
+
+        return
     
     def draw_landmarks_detection(self, frame, crop_right_eye, crop_left_eye):
         """
@@ -119,21 +152,21 @@ class Visualize:
         draw_axes(frame, center, yaw, pitch, roll, scale, focal_length = 50)
     
     def display_window(self, frame):
-        color = (255 ,255 ,255 )
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        text_scale = 0.5
-        thickness = 2
-        text = "Press '%s' key to exit " % (self.BREAK_KEY_LABELS)
-        text_size = cv2.getTextSize(text, font, text_scale, thickness)
-        origin = np.array([frame.shape[-2] - text_size[0][0] - 10, 10])        
-        cv2.putText(frame, text, tuple(origin.astype(int)), font, text_scale, color, thickness)
+        frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+        cv2.putText(frame, str(time.time()), (50,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255 ,255 ,255 ), 2, cv2.LINE_AA)
+        cv2.imshow('Face Detector ', frame)
+        cv2.waitKey(1)
         
     def run(self, args):
-        feed = InputFeeder(args.input_type, args.input_file)
-        feed.load_data()
-        for batch in feed.next_batch():
-            self.process_frame.process(batch)
-        feed.close
+        self.feed.load_data()
+        for batch in self.feed.next_batch():
+            self.process(batch)
+            log.info(msg= 'Frame processing batch image')
+            # self.display_window(batch)
+            # log.info(msg= 'display window is running')
+        self.feed.close
+        
+        #self.display_window(args.input_file)
         # Release resources
         cv2.destroyAllWindows()
 
