@@ -58,8 +58,11 @@ class HeadPoseEstimation:
         assert image.shape[1] == 3
 
         input_dict={self.input_blob:image}
-        results = self.net.infer(input_dict)
-        output = self.preprocess_output(results)
+        #results = self.net.infer(input_dict)
+        infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
+        if self.net.requests[0].wait(-1) == 0:
+            res = infer_request_handle.outputs
+            output = self.preprocess_output(res)
         
         return output
 

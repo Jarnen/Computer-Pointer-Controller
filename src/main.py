@@ -98,7 +98,7 @@ class Visualize:
         self.landmarks_detector = LandmarksDetection(args.m_ld, args.device, args.lib, args.threshold)
         self.head_pose_estimation = HeadPoseEstimation(args.m_pe, args.device, args.threshold)
         self.gaze_estimation = GazeEstimation(args.m_ge,args.device, args.threshold)
-        self.mouse_controller = MouseController('medium', 'fast')
+        self.mouse_controller = MouseController('high', 'fast')
 
         self.face_detector.load_model()
         self.landmarks_detector.load_model()
@@ -114,19 +114,22 @@ class Visualize:
         assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
 
         rois = self.face_detector.predict(frame)
-        # face = self.face_detector.preprocess_output(frame, rois)
+        face = self.face_detector.preprocess_output(frame, rois)
         
-        # landmarks = self.landmarks_detector.predict(face)
-        # right_eye_image, left_eye_image = self.landmarks_detector.preprocess_output(face, landmarks)
+        landmarks = self.landmarks_detector.predict(face)
+        right_eye_image, left_eye_image = self.landmarks_detector.preprocess_output(face, landmarks)
 
-        # head_pose_angles = self.head_pose_estimation.predict(face)
+        head_pose_angles = self.head_pose_estimation.predict(face)
         
-        # x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
+        x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
 
-        # self.mouse_controller.move(x, y)
-
+        self.draw_pose_detection(face, head_pose_angles)
         frame = self.draw_face_roi(frame, rois)
+        
         self.display_window(frame)
+        print("The values are x: {} and y: {} ".format(x,y))
+        
+        self.mouse_controller.move(x, y)
 
     def frame_detector(self, frame):
         """
@@ -147,12 +150,18 @@ class Visualize:
         Draw the eyes ROI landmarks
         """
     
-    def draw_pose_detection(self, frame, center, yaw, pitch, roll, focal_length):
+    def draw_pose_detection(self, face_image, head_pose_angles): #center, yaw, pitch, roll, focal_length):
         """
         Draw yaw, pitch, roll angle lines for visualisation
         """
-        scale = 2
-        draw_axes(frame, center, yaw, pitch, roll, scale, focal_length = 50)
+        scale = 50
+        yaw = head_pose_angles[0][0]
+        pitch = head_pose_angles[0][1]
+        roll = head_pose_angles[0][2]
+        center = (face_image.shape[0]/2, face_image.shape[1]/2 )
+        #center = (964,1081) 
+        draw_axes(face_image, center, yaw, pitch, roll, scale, focal_length = 100)
+
     
     def display_window(self, frame):
         frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
@@ -163,12 +172,11 @@ class Visualize:
     def run(self, args):
         self.feed.load_data()
         for frame in self.feed.next_batch():
-
-            rois = self.face_detector.predict(frame)
-
-            frame = self.draw_face_roi(frame, rois)
-            self.display_window(frame)
-            #self.process(batch)
+            # rois = self.face_detector.predict(frame)
+            # frame = self.draw_face_roi(frame, rois)
+            # self.display_window(frame)
+            # #self.process(batch)
+            self.process(frame)
             log.info(msg= 'Frame processing batch image')
 
         self.feed.close
