@@ -44,7 +44,7 @@ def build_argparser():
     parser.add_argument('-l', '--lib', metavar="PATH", default="",
                        help="(optional) For targeted device custom layers, if any. " \
                        "Path to a shared library with custom layers implementations")
-    parser.add_argument('-t','--threshold', metavar='[0..1]', type=float, default=0.5,
+    parser.add_argument('-t','--threshold', metavar='[0..1]', type=float, default=0.6,
                        help="(optional) Probability threshold for face detections" \
                        "(default: %(default)s)")
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -121,9 +121,11 @@ class Visualize:
 
         head_pose_angles = self.head_pose_estimation.predict(face)
         
-        x, y = self.gaze_estimation.predict(left_eye_image, right_eye_image, head_pose_angles)
+        x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
 
-        self.mouse_controller.move(x,y)
+        self.mouse_controller.move(x, y)
+
+        self.display_window(frame)
 
     def frame_detector(self, frame):
         """

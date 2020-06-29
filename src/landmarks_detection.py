@@ -98,7 +98,7 @@ class LandmarksDetection:
         left_eye_xmax = left_eye[0] + scale
         left_eye_ymax = left_eye[1] + scale
 
-        crop_left_eye = image[left_eye_ymin:left_eye_ymax, left_eye_xmin:left_eye_xmax]
         crop_right_eye = image[right_eye_ymin:right_eye_ymax, right_eye_xmin:right_eye_xmax]
-
-        return crop_left_eye, crop_right_eye
+        crop_left_eye = image[left_eye_ymin:left_eye_ymax, left_eye_xmin:left_eye_xmax]
+        
+        return crop_right_eye, crop_left_eye
