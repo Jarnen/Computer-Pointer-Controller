@@ -32,6 +32,7 @@ class FaceDetection():
         self.output_blob = next(iter(self.model.outputs))
         self.input_shape = self.model.inputs[self.input_blob].shape
         self.output_shape = self.model.outputs[self.output_blob].shape
+
     
     def load_model(self):
         '''
@@ -50,7 +51,10 @@ class FaceDetection():
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        width, height = image.shape[:-1]
+        #width, height = image.shape[:-1]
+        width = image.shape[1]
+        height = image.shape[0]
+        
         image = self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
@@ -59,10 +63,10 @@ class FaceDetection():
         input_dict={self.input_blob:image}
         res = self.net.infer(input_dict)
         res = res[self.output_blob]
-        input_data = res[0][0]
+        output_data = res[0][0]
         rois = []
-        for _, proposal in enumerate(input_data):
-            if proposal[2] > 0.6:
+        for _, proposal in enumerate(output_data):
+            if proposal[2] > 0.5:
                 xmin = np.int(width * proposal[3])
                 ymin = np.int(height * proposal[4])
                 xmax = np.int(width * proposal[5])
@@ -92,7 +96,3 @@ class FaceDetection():
         cropped_roi = image[rois[0][0]: rois[0][2], rois[0][1]:rois[0][3]]
 
         return cropped_roi
-        
-        
-
-

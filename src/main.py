@@ -106,7 +106,7 @@ class Visualize:
         self.gaze_estimation.load_model()
 
         self.feed = InputFeeder(args.input_type, args.input_file)
-        self.process_frame = ProcessFrame(args)
+        #self.process_frame = ProcessFrame(args)
 
     
     def process(self, frame):
@@ -114,17 +114,18 @@ class Visualize:
         assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
 
         rois = self.face_detector.predict(frame)
-        face = self.face_detector.preprocess_output(frame, rois)
+        # face = self.face_detector.preprocess_output(frame, rois)
         
-        landmarks = self.landmarks_detector.predict(face)
-        right_eye_image, left_eye_image = self.landmarks_detector.preprocess_output(face, landmarks)
+        # landmarks = self.landmarks_detector.predict(face)
+        # right_eye_image, left_eye_image = self.landmarks_detector.preprocess_output(face, landmarks)
 
-        head_pose_angles = self.head_pose_estimation.predict(face)
+        # head_pose_angles = self.head_pose_estimation.predict(face)
         
-        x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
+        # x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
 
-        self.mouse_controller.move(x, y)
+        # self.mouse_controller.move(x, y)
 
+        frame = self.draw_face_roi(frame, rois)
         self.display_window(frame)
 
     def frame_detector(self, frame):
@@ -137,9 +138,9 @@ class Visualize:
         """
         Draw the face ROI border
         """
-        frame = cv2.rectangle(frame, (roi[0], roi[1]), (roi[2], roi[3]), (0,220,0) , 2)
+        frame = cv2.rectangle(frame, (roi[0][0], roi[0][1]), (roi[0][2], roi[0][3]), (0,220,0) , 2)
 
-        return
+        return frame
     
     def draw_landmarks_detection(self, frame, crop_right_eye, crop_left_eye):
         """
@@ -161,14 +162,17 @@ class Visualize:
         
     def run(self, args):
         self.feed.load_data()
-        for batch in self.feed.next_batch():
-            self.process(batch)
+        for frame in self.feed.next_batch():
+
+            rois = self.face_detector.predict(frame)
+
+            frame = self.draw_face_roi(frame, rois)
+            self.display_window(frame)
+            #self.process(batch)
             log.info(msg= 'Frame processing batch image')
-            # self.display_window(batch)
-            # log.info(msg= 'display window is running')
+
         self.feed.close
         
-        #self.display_window(args.input_file)
         # Release resources
         cv2.destroyAllWindows()
 

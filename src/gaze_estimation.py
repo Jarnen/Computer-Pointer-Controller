@@ -35,6 +35,8 @@ class GazeEstimation:
         self.input_shape = self.model.inputs[self.input_blob].shape
         self.output_shape = self.model.outputs[self.output_blob].shape
 
+        
+
     def load_model(self):
         """
         Loads the model 
