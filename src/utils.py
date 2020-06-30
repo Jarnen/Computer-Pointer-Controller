@@ -3,7 +3,8 @@ import math
 import numpy as np
 import cv2
 
-def draw_axes(frame, center_of_face, yaw, pitch, roll, scale, focal_length):
+def draw_axes(frame, yaw, pitch, roll, scale, focal_length):
+    center_of_face = get_center(frame)
     yaw *= np.pi / 180.0
     pitch *= np.pi / 180.0
     roll *= np.pi / 180.0
@@ -59,6 +60,8 @@ def draw_axes(frame, center_of_face, yaw, pitch, roll, scale, focal_length):
 
     return frame
 
+#http://www.cs.cmu.edu/~16385/s17/Slides/11.1_Camera_matrix.pdf
+
 def build_camera_matrix(camera_center, focal_length):
     """
     Returns camera projection matrix
@@ -76,3 +79,21 @@ def build_camera_matrix(camera_center, focal_length):
                        [0, f, cy],
                        [0, 0, 1]])
     return matrix
+    
+'''
+#https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+'''
+
+def get_center(frame):
+    # convert image to grayscale image
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # convert the grayscale image to binary image
+    ret,thresh = cv2.threshold(gray_frame,127,255,0)
+    
+    # calculate moments of binary image
+    M = cv2.moments(thresh)
+    # calculate x,y coordinate of center
+    cX = int(M["m10"] / M["m00"])
+    cY = int(M["m01"] / M["m00"])
+
+    return (cX, cY)
