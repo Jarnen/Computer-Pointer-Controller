@@ -46,21 +46,17 @@ class GazeEstimation:
 
     def predict(self, left_eye_image, right_eye_image, head_pose_angles):
         """
-        Runs inference and returns the raw results
+        Runs inference and returns x, y coordinates
 
         Args:
-        inputs: input dictionary in the format {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
+        inputs: left eye roi, right eye roi, head pose angles
         """
 
-        left_eye_image = self.preprocess_image(left_eye_image)
-        right_eye_image = self.preprocess_image(right_eye_image)
+        left_eye_image = self.preprocess_input(left_eye_image)
+        right_eye_image = self.preprocess_input(right_eye_image)
 
         inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
 
-        # infer_request_handle = self.net.start_async(request_id=0, inputs=inputs)
-        # #infer_status = infer_request_handle.wait()
-        # result = infer_request_handle.outputs
-        #result  = self.net.infer(inputs)
         infer_request_handle = self.net.start_async(request_id=0, inputs=inputs)
         if self.net.requests[0].wait(-1) == 0:
             result = infer_request_handle.outputs
@@ -71,29 +67,17 @@ class GazeEstimation:
     def check_model(self):
         raise NotImplementedError
      
-    '''
-    def preprocess_input(self, left_eye_image, right_eye_image, head_pose_angles):
+    def preprocess_input(self, frame):
         """
-        Returns input dictionary for inferencing
+        Returns processed eye image of shape [1,2,60,60]
 
-        Args:
-        left_eye_image: cropped left eye image in the format [H,W,C].
-        right_eye_image: cropped right eye image in the format [H,W,C].
-        head_pose_angles: head pose angles in the format [1,3].
+        Arg:
+        Eye frame extracted from lanmarks
         """
-
-        left_eye_image = self.preprocess_image(left_eye_image)
-        right_eye_image = self.preprocess_image(right_eye_image)
-
-        inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
-
-        return inputs
-        '''
-
-    def preprocess_image(self, image):
-        image_shape = image.shape
-        log.info("Image shape: {}".format(image_shape))
-        pr_image = cv2.resize(image, (60, 60))
+        frame_shape = frame.shape
+        
+        log.info("Image shape: {}".format(frame_shape))
+        pr_image = cv2.resize(frame, (60, 60))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
         pr_image = pr_image.reshape(1, *pr_image.shape)
 
