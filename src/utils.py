@@ -3,6 +3,7 @@ import math
 import numpy as np
 import cv2
 
+# ref: https://www.learnopencv.com/rotation-matrix-to-euler-angles/
 def draw_axes(frame, yaw, pitch, roll, scale, focal_length):
     center_of_face = get_center(frame)
     yaw *= np.pi / 180.0
@@ -20,7 +21,6 @@ def draw_axes(frame, yaw, pitch, roll, scale, focal_length):
                    [math.sin(roll), math.cos(roll), 0],
                    [0, 0, 1]])
     # R = np.dot(Rz, Ry, Rx)
-    # ref: https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     # R = np.dot(Rz, np.dot(Ry, Rx))
     R = Rz @ Ry @ Rx
     
@@ -55,12 +55,10 @@ def draw_axes(frame, yaw, pitch, roll, scale, focal_length):
     yp2 = (zaxis[1] / zaxis[2] * camera_matrix[1][1]) + cy
     p2 = (int(xp2), int(yp2))
     cv2.line(frame, p1, p2, (255, 0, 0), 2)
-    
-    cv2.circle(frame, p2, 3, (255, 0, 0), 2)
 
     return frame
 
-#http://www.cs.cmu.edu/~16385/s17/Slides/11.1_Camera_matrix.pdf
+#ref: http://www.cs.cmu.edu/~16385/s17/Slides/11.1_Camera_matrix.pdf
 
 def build_camera_matrix(camera_center, focal_length):
     """
@@ -80,20 +78,21 @@ def build_camera_matrix(camera_center, focal_length):
                        [0, 0, 1]])
     return matrix
     
-'''
-#https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
-'''
+#ref: https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python
 
 def get_center(frame):
-    # convert image to grayscale image
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # convert the grayscale image to binary image
-    ret,thresh = cv2.threshold(gray_frame,127,255,0)
+    # # convert image to grayscale image
+    # gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # # convert the grayscale image to binary image
+    # ret,thresh = cv2.threshold(gray_frame,127,255,0)
     
-    # calculate moments of binary image
-    M = cv2.moments(thresh)
-    # calculate x,y coordinate of center
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
+    # # calculate moments of binary image
+    # M = cv2.moments(thresh)
+    # # calculate x,y coordinate of center
+    # cX = int(M["m10"] / M["m00"])
+    # cY = int(M["m01"] / M["m00"])
+    height, width = frame.shape[0:2]
+    cX = width/2
+    cY = height/2
 
     return (cX, cY)

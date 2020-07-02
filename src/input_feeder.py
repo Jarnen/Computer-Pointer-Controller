@@ -9,6 +9,8 @@ Sample usage:
 '''
 import cv2
 from numpy import ndarray
+from numpy import hstack
+import logging as log
 
 class InputFeeder:
     def __init__(self, input_type, input_file=None):
@@ -33,12 +35,33 @@ class InputFeeder:
         '''
         Returns the next image from either a video file or webcam.
         If input_type is 'image', then it returns the same image.
-        '''
+        # '''
         while True:
-            for _ in range(8):
-                _, frame=self.cap.read()
+            for retVal in range(2):
+                retVal, frame=self.cap.read()
+
+                if self.input_type=='cam':
+                    frame = cv2.flip(frame,1)
+                
+                if not retVal:
+                    log.info("End of frame")
+                    break
+                    keypressed = cv2.waitKey(60) 
+                    
             yield frame
 
+        # while self.cap.isOpened():
+        #     retVal, frame = self.cap.read()
+
+        #     if self.input_type=='cam':
+        #         frame = cv2.flip(frame, 1)
+            
+        #     if not retVal:
+        #         log.info("End of frame")
+        #         break
+        #         keypressed = cv2.waitKey(60) 
+
+        #     yield frame
 
     def close(self):
         '''

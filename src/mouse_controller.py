@@ -9,15 +9,25 @@ This class is provided to help get you started; you can choose whether you want 
 '''
 import pyautogui
 
+
 class MouseController:
     def __init__(self, precision, speed):
-        precision_dict={'high':150, 'low':1000, 'medium':500}
+        #good performance so far (precision -100, speed-0)
+        #precision_dict={'high':100, 'low':1000, 'medium':500}
+        # speed_dict={'fast':0.25, 'slow':10, 'medium':5}
+
+        precision_dict={'high':100, 'low':1000, 'medium':500}
         speed_dict={'fast':0.25, 'slow':10, 'medium':5}
 
         self.precision=precision_dict[precision]
         self.speed=speed_dict[speed]
 
     def move(self, x, y):
+        #pyautogui.moveRel(x*self.precision, -1*y*self.precision, duration=self.speed)
+        pyautogui.FAILSAFE = False
         pyautogui.moveRel(x*self.precision, -1*y*self.precision, duration=self.speed)
+        
+        
 
+        
 
