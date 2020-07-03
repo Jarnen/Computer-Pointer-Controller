@@ -12,6 +12,10 @@ from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
 from gaze_estimation import GazeEstimation
 import time
+from multiprocessing import Process
+import ray
+import queue
+
 
 DEVICE_TYPES = ['CPU', 'GPU', 'FPGA', 'MYRAID', 'HETERO:GPU,CPU']
 SPEED = ['fast', 'medium', 'slow']
@@ -83,6 +87,7 @@ class Visualize:
         Initialise the variables
         
         """
+
         self.frame_time = 0
         self.frame_start_time = 0
         self.fps = 0
@@ -109,7 +114,6 @@ class Visualize:
 
         self.frame_timeout = 0 if args.timelapse else 1
         self.display = not args.no_show
-    
 
     def update_fps(self):
         now = time.time()
@@ -128,15 +132,16 @@ class Visualize:
         right_eye_image, left_eye_image, right_eye_roi, left_eye_roi = self.landmarks_detector.preprocess_output(face, landmarks)
         head_pose_angles = self.head_pose_estimation.predict(face)
         
-        self.draw_pose_detection(face, head_pose_angles)
-        self.draw_eye_landmarks(face, right_eye_roi, left_eye_roi)
-        self.draw_face_roi(frame, rois)
+        if self.display:
+            self.draw_pose_detection(face, head_pose_angles)
+            self.draw_eye_landmarks(face, right_eye_roi, left_eye_roi)
+            self.draw_face_roi(frame, rois)
         
         x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
-        self.mouse_controller.move(x, y)
         
-        self.display_window(frame)
+        self.mouse_controller.move(x,y)
         
+        self.display_window(frame)        
 
     def draw_face_roi(self, frame, roi):
         """
@@ -179,15 +184,15 @@ class Visualize:
     def should_stop_display(self):
         key = cv2.waitKey(self.frame_timeout) & 0xFF
         return key in self.BREAK_KEYS
-
+    
     def run(self, args):
         self.feed.load_data()
+        log.info(msg= 'Frame processing starts')
         for frame in self.feed.next_batch():
             self.process(frame)
-            log.info(msg= 'Frame processing batch image')
-
         self.feed.close
         # Release resources
+        log.info(msg= 'Frame processing ends')
         cv2.destroyAllWindows()
 
 def main():
