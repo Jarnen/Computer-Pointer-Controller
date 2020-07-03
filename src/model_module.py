@@ -31,7 +31,7 @@ class Model(object):
         self.input_shape = self.model.inputs[self.input_blob].shape
         self.output_shape = self.model.outputs[self.output_blob].shape
 
-        log.info('Model {} initialised successfully'.format(self.model))
+        log.info('Model {} params initialised successfully'.format(self.model.name))
     
     def load_model(self):
         '''
@@ -42,28 +42,17 @@ class Model(object):
         core = IECore()
         self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
-        log.info('Network {} loaded suceessfully.'.format(self.net))
+        log.info('Network for model {} loaded suceessfully.'.format(self.model.name))
 
-    # def predict(self, image):
-    #     '''
-    #     TODO: You will need to complete this method.
-    #     This method is meant for running predictions on the input image.
-    #     '''
-    #     raise NotImplementedError
-
-    # def check_model(self):
-    #     raise NotImplementedError
 
     def preprocess_input(self, image):
         '''
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
-
+        log.info("Frame preprocessed successfully.")
         pr_image = cv2.resize(image, (self.input_shape[3], self.input_shape[2]))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
         pr_image = pr_image.reshape(1, *pr_image.shape)
-
-        log.info("Frame for {} model preprocessed successfully.".format(self.model))
 
         return pr_image
