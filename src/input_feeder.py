@@ -47,21 +47,8 @@ class InputFeeder:
                     log.info("End of frame")
                     break
                     keypressed = cv2.waitKey(60) 
-                    
+
             yield frame
-
-        # while self.cap.isOpened():
-        #     retVal, frame = self.cap.read()
-
-        #     if self.input_type=='cam':
-        #         frame = cv2.flip(frame, 1)
-            
-        #     if not retVal:
-        #         log.info("End of frame")
-        #         break
-        #         keypressed = cv2.waitKey(60) 
-
-        #     yield frame
 
     def close(self):
         '''
