@@ -12,9 +12,7 @@ from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
 from gaze_estimation import GazeEstimation
 import time
-from multiprocessing import Process
-import ray
-import queue
+
 
 
 DEVICE_TYPES = ['CPU', 'GPU', 'FPGA', 'MYRAID', 'HETERO:GPU,CPU']
@@ -115,11 +113,12 @@ class Visualize:
         self.frame_timeout = 0 if args.timelapse else 1
         self.display = not args.no_show
 
-    def update_fps(self):
-        now = time.time()
-        self.frame_time = now - self.frame_start_time
-        self.fps = 1.0 / self.frame_time
-        self.frame_start_time = now
+    # def update_fps(self):
+    #     now = time.time()
+    #     self.frame_time = now - self.frame_start_time
+    #     self.fps = 1.0 / self.frame_time
+    #     self.frame_start_time = now
+        
 
     def process(self, frame):
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
@@ -169,18 +168,17 @@ class Visualize:
 
     
     def display_window(self, frame):
-        total_message = "The Total Count: " #{}".format(total_count)
-        current_message = "The Current Count: " #{}".format(p_counts)
-        duration_message = "Duration in Frame: " #{} sec".format(duration)
-        inf_time_message = "Inference time: " #{:.3f}ms".format(det_time * 1000)
-        cv2.putText(frame, inf_time_message, (15, 15),cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        cv2.putText(frame, current_message , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        cv2.putText(frame, total_message , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        cv2.putText(frame, duration_message , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        # total_message = "The Total Count: " #{}".format(total_count)
+        # current_message = "The Current Count: " #{}".format(p_counts)
+        # duration_message = "Duration in Frame: " #{} sec".format(duration)
+        # inf_time_message = "Inference time: " #{:.3f}ms".format(det_time * 1000)
+        # cv2.putText(frame, inf_time_message, (15, 15),cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        # cv2.putText(frame, current_message , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        # cv2.putText(frame, total_message , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        # cv2.putText(frame, duration_message , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.imshow('Mouse Controller', frame)
         cv2.waitKey(1)
     
-
     def should_stop_display(self):
         key = cv2.waitKey(self.frame_timeout) & 0xFF
         return key in self.BREAK_KEYS
