@@ -86,26 +86,31 @@ class Visualize:
         
         """
 
-        self.frame_time = 0
-        self.frame_start_time = 0
-        self.fps = 0
-        self.frame_num = 0
-        self.frame_count = -1
-
+        # self.frame_time = 0
+        # self.frame_start_time = 0
+        # self.fps = 0
+        # self.frame_num = 0
+        # self.frame_count = -1
+        
+        
+        model_initialisation_start = time.time()
         self.face_detector = FaceDetection(args.m_fd, args.device_fd, args.threshold)
         self.landmarks_detector = LandmarksDetection(args.m_lm, args.device_lm, args.threshold)
         self.head_pose_estimation = HeadPoseEstimation(args.m_hp, args.device_hp, args.threshold)
         self.gaze_estimation = GazeEstimation(args.m_ge,args.device_ge, args.threshold)
-        log.info("Model classes initialised")
+        self.model_initialised_time = time.time() - model_initialisation_start
+        log.info("All model classes initialised in {} milliseconds".format(int(round(self.model_initialised_time * 1000))))
 
         self.mouse_controller = MouseController(args.precision, args.speed)
         log.info("Mouse controller initialised")
 
+        models_load_start = time.time()
         self.face_detector.load_model()
         self.landmarks_detector.load_model()
         self.head_pose_estimation.load_model()
         self.gaze_estimation.load_model()
-        log.info("Models are loaded")
+        self.models_load_time = time.time() - models_load_start
+        log.info("All models loaded sucessfully in {} milliseconds.".format(self.models_load_time))
 
         self.feed = InputFeeder(args.input_type, args.input_file)
         log.info("Input feeder initialised")
@@ -120,27 +125,22 @@ class Visualize:
     #     self.frame_start_time = now
         
 
-    def process(self, frame):
+    def process_pipeline(self, frame):
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
         assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
+        pipeline_process_start = time.time()
+        self.rois = self.face_detector.predict(frame)
+        self.face = self.face_detector.preprocess_output(frame, self.rois)
+        
+        self.landmarks = self.landmarks_detector.predict(self.face)
+        self.right_eye_image, self.left_eye_image, self.right_eye_roi, self.left_eye_roi = self.landmarks_detector.preprocess_output(self.face, self.landmarks)
+        self.head_pose_angles = self.head_pose_estimation.predict(self.face)
+        
+        x, y = self.gaze_estimation.predict(self.right_eye_image, self.left_eye_image, self.head_pose_angles)
+        self.pipeline_processtime = time.time() - pipeline_process_start
+        log.info("Completed frame pipleline process in {} seconds. ".format(self.pipeline_processtime))
 
-        rois = self.face_detector.predict(frame)
-        face = self.face_detector.preprocess_output(frame, rois)
-        
-        landmarks = self.landmarks_detector.predict(face)
-        right_eye_image, left_eye_image, right_eye_roi, left_eye_roi = self.landmarks_detector.preprocess_output(face, landmarks)
-        head_pose_angles = self.head_pose_estimation.predict(face)
-        
-        if self.display:
-            self.draw_pose_detection(face, head_pose_angles)
-            self.draw_eye_landmarks(face, right_eye_roi, left_eye_roi)
-            self.draw_face_roi(frame, rois)
-        
-        x, y = self.gaze_estimation.predict(right_eye_image, left_eye_image, head_pose_angles)
-        
-        self.mouse_controller.move(x,y)
-        
-        self.display_window(frame)        
+        return x, y       
 
     def draw_face_roi(self, frame, roi):
         """
@@ -168,14 +168,18 @@ class Visualize:
 
     
     def display_window(self, frame):
-        # total_message = "The Total Count: " #{}".format(total_count)
-        # current_message = "The Current Count: " #{}".format(p_counts)
-        # duration_message = "Duration in Frame: " #{} sec".format(duration)
-        # inf_time_message = "Inference time: " #{:.3f}ms".format(det_time * 1000)
-        # cv2.putText(frame, inf_time_message, (15, 15),cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        # cv2.putText(frame, current_message , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        # cv2.putText(frame, total_message , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        # cv2.putText(frame, duration_message , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        
+        if self.display:
+            self.draw_pose_detection(self.face, self.head_pose_angles)
+            self.draw_eye_landmarks(self.face, self.right_eye_roi, self.left_eye_roi)
+            self.draw_face_roi(frame, self.rois)
+
+        total_processing_pipeline = "Pipeline processed frame in {} milliseconds".format(int(round(self.pipeline_processtime *1000)))
+        model_init_time = "All models classes initialised in {} milliseconds".format(int(round(self.model_initialised_time * 1000)))
+        model_load_time = "All models loaded in {} milliseconds".format(int(round(self.models_load_time * 1000)))
+        cv2.putText(frame, model_init_time , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        cv2.putText(frame, model_load_time , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+        cv2.putText(frame, total_processing_pipeline , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.imshow('Mouse Controller', frame)
         cv2.waitKey(1)
     
@@ -187,7 +191,9 @@ class Visualize:
         self.feed.load_data()
         log.info(msg= 'Frame processing starts')
         for frame in self.feed.next_batch():
-            self.process(frame)
+            x, y = self.process_pipeline(frame)
+            self.mouse_controller.move(x,y)
+            self.display_window(frame) 
         self.feed.close
         # Release resources
         log.info(msg= 'Frame processing ends')
