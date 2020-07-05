@@ -180,7 +180,7 @@ class Visualize:
         cv2.putText(frame, model_init_time , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.putText(frame, model_load_time , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.putText(frame, total_processing_pipeline , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
-        cv2.imshow('Mouse Controller', frame)
+        cv2.imshow('Computer Pointer Controller', frame)
         cv2.waitKey(1)
     
     def should_stop_display(self):
