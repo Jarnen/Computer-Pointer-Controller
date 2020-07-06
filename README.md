@@ -23,6 +23,7 @@ This project comes together with it's virtual environment. Refer to the project 
 However, to run on your own environment, refer to the requirements.txt file for all the required software that are needed to be installed before executing. This project had been tested and executed on a Linux operating system with Intel's Openvino Toolkit 2020.1. The hardware used had an Intel Core i7 processor (8th Gen) with integrated GPU. 
 
 Refer below is the project structure:
+
 The bin folder contains the demo video file, the models folder contains all the Intel's Pretrained models needed for execution, and the src folder contains all necessary python files.
 ```
 📦ComputerPointerController
@@ -88,14 +89,17 @@ The bin folder contains the demo video file, the models folder contains all the 
 Use the command line tool in Windows or terminal in Linux to execute the application. To run the application, change directory into the root folder and execute the following commands:
 
     1. Sample 1: Using CPU to run inference on the frames
+```
 python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose
-
+```
     2. Sample 2: Using GPU to run inference on the frames
+```
 python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose
-
+```
 For help on which arguments to use, execute the below command;
+```
         python3 src/main.py --help
-
+```
 
 ## Documentation
 *TODO:* Include any documentation that users might need to better understand your project code. For instance, this is a good place to explain the command line arguments that your project supports.
