@@ -2,9 +2,13 @@
 
 *TODO:* Write a short introduction to your project.
 
-This project demonstrates a computer pointer controller by implementing a pipeline of four different Intel's pretrained models. These models are face detection model, landmarks regression model, head pose estimation model and gaze estimation model.
+This project demonstrates a computer pointer controller by implementing a pipeline of four different Intel's pretrained models. These models are face detection model, landmarks regression model, head pose estimation model and gaze estimation model. Refer below the list of the models;
+        1. face-detection-adas-binary-0001
+        2. gaze-estimation-adas-0002
+        3. head-pose-estimation-adas-0001
+        4. landmarks-regression-retail-0009
 
-It detects a face from camera or video using the face detection model. From the face, facial landmarks, right eye and left eye, are detected using the landmarks regression model. Also the head pose angles, yaw, pitch and roll, are detected using the head pose estimation model. The landmarks together with head pose angles are then used by gaze estimation model to predict the direction of gaze by the person. This direction is then used by the pyautogui to move the computer pointer to where the person is gazing.
+This project implements a pipeline of models input and outputs. It takes a video or camera feed as an input for the face detection model and outputs the face region of interests (roi). Landmarks regression model gets the face roi as an input and detects facial landmarks, right eye and left eye. Also the head pose estimation model takes the facial roi as input and detects the head pose angles, yaw, pitch and roll. The landmarks and the head pose angles are then fed to the gaze estimation model to predict the direction or cordinates of gaze by the person. These coordinates are then fed to the pyautogui to move the computer pointer to where the person is gazing.
 
 ![Sample Image](cpc_image.png)
 Format: ![Alt Text](url)
@@ -13,48 +17,52 @@ Format: ![Alt Text](url)
 ## Project Set Up and Installation
 *TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
 
-Below is the project structure:
+This project comes together with it's virtual environment. Refer to the project structure below, the virtual environment is the cpc-project-env folder. Once you have downloaded this repository, change directory into it and run the command "source cpc-project-env/bin/activate" to activate the environment. However, to run on your own environment, refer to the requirements.txt file for all the required software that are needed to be installed before executing. This project had been tested and executed on a Linux operating system with Intel's Openvino Toolkit 2020.1. The hardware used had an Intel Core i7 processor (8th Gen) with integrated GPU. 
+
+Refer below is the project structure:
+The bin folder contains the demo video file, the models folder contains all the Intel's Pretrained models needed for execution, and the src folder contains all necessary python files.
 ```
 📦ComputerPointerController
  ┣ 📂bin
- ┃ ┣ 📜.gitkeep
  ┃ ┗ 📜demo.mp4
  ┣ 📂cpc-project-env
- ┃ ┗ 📜pyvenv.cfg
+ ┃ ┣ 📂bin
+ ┃   ┣ 📜activate
+ ┃  
  ┣ 📂models
  ┃ ┗ 📂intel
- ┃ ┃ ┣ 📂face-detection-adas-0001
- ┃ ┃ ┃ ┣ 📂FP16
- ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-0001.bin
- ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-0001.xml
- ┃ ┃ ┃ ┗ 📂FP32
- ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-0001.bin
- ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-0001.xml
- ┃ ┃ ┣ 📂face-detection-adas-binary-0001
- ┃ ┃ ┃ ┗ 📂INT1
- ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-binary-0001.bin
- ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-binary-0001.xml
- ┃ ┃ ┣ 📂gaze-estimation-adas-0002
- ┃ ┃ ┃ ┣ 📂FP16
- ┃ ┃ ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
- ┃ ┃ ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
- ┃ ┃ ┃ ┗ 📂FP32
- ┃ ┃ ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
- ┃ ┃ ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
- ┃ ┃ ┣ 📂head-pose-estimation-adas-0001
- ┃ ┃ ┃ ┣ 📂FP16
- ┃ ┃ ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
- ┃ ┃ ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
- ┃ ┃ ┃ ┗ 📂FP32
- ┃ ┃ ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
- ┃ ┃ ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
- ┃ ┃ ┗ 📂landmarks-regression-retail-0009
- ┃ ┃ ┃ ┣ 📂FP16
- ┃ ┃ ┃ ┃ ┣ 📜landmarks-regression-retail-0009.bin
- ┃ ┃ ┃ ┃ ┗ 📜landmarks-regression-retail-0009.xml
- ┃ ┃ ┃ ┗ 📂FP32
- ┃ ┃ ┃ ┃ ┣ 📜landmarks-regression-retail-0009.bin
- ┃ ┃ ┃ ┃ ┗ 📜landmarks-regression-retail-0009.xml
+ ┃   ┣ 📂face-detection-adas-0001
+ ┃   ┃ ┣ 📂FP16
+ ┃   ┃ ┃ ┣ 📜face-detection-adas-0001.bin
+ ┃   ┃ ┃ ┗ 📜face-detection-adas-0001.xml
+ ┃   ┃ ┗ 📂FP32
+ ┃   ┃ ┃ ┣ 📜face-detection-adas-0001.bin
+ ┃   ┃ ┃ ┗ 📜face-detection-adas-0001.xml
+ ┃   ┣ 📂face-detection-adas-binary-0001
+ ┃   ┃ ┗ 📂INT1
+ ┃   ┃ ┃ ┣ 📜face-detection-adas-binary-0001.bin
+ ┃   ┃ ┃ ┗ 📜face-detection-adas-binary-0001.xml
+ ┃   ┣ 📂gaze-estimation-adas-0002
+ ┃   ┃ ┣ 📂FP16
+ ┃   ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
+ ┃   ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
+ ┃   ┃ ┗ 📂FP32
+ ┃   ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
+ ┃   ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
+ ┃   ┣ 📂head-pose-estimation-adas-0001
+ ┃   ┃ ┣ 📂FP16
+ ┃   ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
+ ┃   ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
+ ┃   ┃ ┗ 📂FP32
+ ┃   ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
+ ┃   ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
+ ┃   ┗ 📂landmarks-regression-retail-0009
+ ┃     ┣ 📂FP16
+ ┃     ┃ ┣ 📜landmarks-regression-retail-0009.bin
+ ┃     ┃ ┗ 📜landmarks-regression-retail-0009.xml
+ ┃     ┗ 📂FP32
+ ┃       ┣ 📜landmarks-regression-retail-0009.bin
+ ┃       ┗ 📜landmarks-regression-retail-0009.xml
  ┣ 📂src
  ┃ ┣ 📜face_detection.py
  ┃ ┣ 📜gaze_estimation.py
@@ -70,8 +78,20 @@ Below is the project structure:
  ┣ 📜cpc_image.png
  ┗ 📜requirements.txt
 ```
+
 ## Demo
 *TODO:* Explain how to run a basic demo of your model.
+
+Use the command line tool in Windows or terminal in Linux to execute the application. To run the application, change directory into the root folder and execute the following commands:
+    1. Sample 1: Using CPU to run inference on the frames
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose
+
+    2. Sample 2: Using GPU to run inference on the frames
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose
+
+For help on which arguments to use, execute the below command;
+        python3 src/main.py --help
+
 
 ## Documentation
 *TODO:* Include any documentation that users might need to better understand your project code. For instance, this is a good place to explain the command line arguments that your project supports.
