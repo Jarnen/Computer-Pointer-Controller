@@ -6,7 +6,6 @@ import cv2
 import numpy as np
 from input_feeder import InputFeeder
 from mouse_controller import MouseController
-from inference import Model
 from face_detection import FaceDetection
 from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
@@ -67,8 +66,6 @@ def build_argparser():
     parser.add_argument('-p','--precision', default='high', choices=PRECISION,
                        help="(required) Speed ('high', 'medium','low')for mouse movement" \
                        "(default: %(default)s)")
-    parser.add_argument('-tl', '--timelapse', action='store_true',
-                         help="(optional) Auto-pause after each frame")
     parser.add_argument('--no_show', action='store_true',
                          help="(optional) Do not display output")
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -77,21 +74,12 @@ def build_argparser():
     return parser
 
 class Visualize:
-    BREAK_KEY_LABELS = "q(Q) or Escape"
-    BREAK_KEYS = {ord('q'), ord('Q'), 27}
 
     def __init__(self, args):
         """
         Initialise the variables
         
         """
-
-        # self.frame_time = 0
-        # self.frame_start_time = 0
-        # self.fps = 0
-        # self.frame_num = 0
-        # self.frame_count = -1
-        
         
         model_initialisation_start = time.time()
         self.face_detector = FaceDetection(args.m_fd, args.device_fd, args.threshold)
@@ -115,16 +103,8 @@ class Visualize:
         self.feed = InputFeeder(args.input_type, args.input_file)
         log.info("Input feeder initialised")
 
-        self.frame_timeout = 0 if args.timelapse else 1
-        self.display = not args.no_show
-
-    # def update_fps(self):
-    #     now = time.time()
-    #     self.frame_time = now - self.frame_start_time
-    #     self.fps = 1.0 / self.frame_time
-    #     self.frame_start_time = now
+        self.show_results = not args.no_show
         
-
     def process_pipeline(self, frame):
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
         assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
@@ -166,10 +146,8 @@ class Visualize:
 
         draw_axes(face, yaw, pitch, roll, scale, focal_length = 50)
 
-    
-    def display_window(self, frame):
-        
-        if self.display:
+    def display_results(self, frame):
+        if self.show_results:
             self.draw_pose_detection(self.face, self.head_pose_angles)
             self.draw_eye_landmarks(self.face, self.right_eye_roi, self.left_eye_roi)
             self.draw_face_roi(frame, self.rois)
@@ -177,15 +155,13 @@ class Visualize:
         total_processing_pipeline = "Pipeline processed frame in {} milliseconds".format(int(round(self.pipeline_processtime *1000)))
         model_init_time = "All models classes initialised in {} milliseconds".format(int(round(self.model_initialised_time * 1000)))
         model_load_time = "All models loaded in {} milliseconds".format(int(round(self.models_load_time * 1000)))
+
         cv2.putText(frame, model_init_time , (15, 30), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.putText(frame, model_load_time , (15, 45), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
         cv2.putText(frame, total_processing_pipeline , (15, 60), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,220,0), 1)
+    
         cv2.imshow('Computer Pointer Controller', frame)
         cv2.waitKey(1)
-    
-    def should_stop_display(self):
-        key = cv2.waitKey(self.frame_timeout) & 0xFF
-        return key in self.BREAK_KEYS
     
     def run(self, args):
         self.feed.load_data()
@@ -193,8 +169,8 @@ class Visualize:
         for frame in self.feed.next_batch():
             x, y = self.process_pipeline(frame)
             self.mouse_controller.move(x,y)
-            self.display_window(frame) 
-        self.feed.close
+            self.display_results(frame)
+            self.feed.close
         # Release resources
         log.info(msg= 'Frame processing ends')
         cv2.destroyAllWindows()
@@ -209,7 +185,6 @@ def main():
 
     visualize = Visualize(args)
     visualize.run(args)
-
 
 if __name__ == '__main__':
     main()
