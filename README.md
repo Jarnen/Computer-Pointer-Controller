@@ -1,6 +1,13 @@
 # Computer Pointer Controller
 
-*TODO:* Write a short introduction to your project
+*TODO:* Write a short introduction to your project.
+This project demonstrates a computer pointer controller by implementing a pipeline of four different Intel's pretrained models. These models are face detection model, landmarks regression model, head pose estimation model and gaze estimation model.
+
+It detects a face from camera or video using the face detection model. From the face, facial landmarks, right eye and left eye, are detected using the landmarks regression model. Also the head pose angles, yaw, pitch and roll, are detected using the head pose estimation model. The landmarks together with head pose angles are then used by gaze estimation model to predict the direction of gaze by the person. This direction is then used by the pyautogui to move the computer pointer to where the person is gazing.
+
+![Sample Image](cpc_image.png)
+Format: ![Alt Text](url)
+
 
 ## Project Set Up and Installation
 *TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
