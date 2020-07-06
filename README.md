@@ -14,7 +14,7 @@ Format: ![Alt Text](url)
 *TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
 
 Below is the project structure:
-
+```
 📦ComputerPointerController
  ┣ 📂bin
  ┃ ┣ 📜.gitkeep
@@ -69,8 +69,7 @@ Below is the project structure:
  ┣ 📜README.md
  ┣ 📜cpc_image.png
  ┗ 📜requirements.txt
-
-
+```
 ## Demo
 *TODO:* Explain how to run a basic demo of your model.
 
