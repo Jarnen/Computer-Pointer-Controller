@@ -13,6 +13,64 @@ Format: ![Alt Text](url)
 ## Project Set Up and Installation
 *TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
 
+Below is the project structure:
+
+📦ComputerPointerController
+ ┣ 📂bin
+ ┃ ┣ 📜.gitkeep
+ ┃ ┗ 📜demo.mp4
+ ┣ 📂cpc-project-env
+ ┃ ┗ 📜pyvenv.cfg
+ ┣ 📂models
+ ┃ ┗ 📂intel
+ ┃ ┃ ┣ 📂face-detection-adas-0001
+ ┃ ┃ ┃ ┣ 📂FP16
+ ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-0001.bin
+ ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-0001.xml
+ ┃ ┃ ┃ ┗ 📂FP32
+ ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-0001.bin
+ ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-0001.xml
+ ┃ ┃ ┣ 📂face-detection-adas-binary-0001
+ ┃ ┃ ┃ ┗ 📂INT1
+ ┃ ┃ ┃ ┃ ┣ 📜face-detection-adas-binary-0001.bin
+ ┃ ┃ ┃ ┃ ┗ 📜face-detection-adas-binary-0001.xml
+ ┃ ┃ ┣ 📂gaze-estimation-adas-0002
+ ┃ ┃ ┃ ┣ 📂FP16
+ ┃ ┃ ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
+ ┃ ┃ ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
+ ┃ ┃ ┃ ┗ 📂FP32
+ ┃ ┃ ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
+ ┃ ┃ ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
+ ┃ ┃ ┣ 📂head-pose-estimation-adas-0001
+ ┃ ┃ ┃ ┣ 📂FP16
+ ┃ ┃ ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
+ ┃ ┃ ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
+ ┃ ┃ ┃ ┗ 📂FP32
+ ┃ ┃ ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
+ ┃ ┃ ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
+ ┃ ┃ ┗ 📂landmarks-regression-retail-0009
+ ┃ ┃ ┃ ┣ 📂FP16
+ ┃ ┃ ┃ ┃ ┣ 📜landmarks-regression-retail-0009.bin
+ ┃ ┃ ┃ ┃ ┗ 📜landmarks-regression-retail-0009.xml
+ ┃ ┃ ┃ ┗ 📂FP32
+ ┃ ┃ ┃ ┃ ┣ 📜landmarks-regression-retail-0009.bin
+ ┃ ┃ ┃ ┃ ┗ 📜landmarks-regression-retail-0009.xml
+ ┣ 📂src
+ ┃ ┣ 📜face_detection.py
+ ┃ ┣ 📜gaze_estimation.py
+ ┃ ┣ 📜head_pose_estimation.py
+ ┃ ┣ 📜input_feeder.py
+ ┃ ┣ 📜landmarks_detection.py
+ ┃ ┣ 📜main.py
+ ┃ ┣ 📜model.py
+ ┃ ┣ 📜model_module.py
+ ┃ ┣ 📜mouse_controller.py
+ ┃ ┗ 📜utils.py
+ ┣ 📜README.md
+ ┣ 📜cpc_image.png
+ ┗ 📜requirements.txt
+
+
 ## Demo
 *TODO:* Explain how to run a basic demo of your model.
 
