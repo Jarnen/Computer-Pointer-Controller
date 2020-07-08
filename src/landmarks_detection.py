@@ -26,9 +26,15 @@ class LandmarksDetection(Model):
         assert image.shape[1] == 3
 
         input_dict={self.input_blob:image}
-        infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
-        if self.net.requests[0].wait(-1) == 0:
-            result = infer_request_handle.outputs[self.output_blob]
+
+        # #----async inference----
+        # infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
+        # if self.net.requests[0].wait(-1) == 0:
+        #     result = infer_request_handle.outputs[self.output_blob]
+
+        #----synce inference----
+        results = self.net.infer(input_dict)
+        result = results[self.output_blob]
 
         return result
 

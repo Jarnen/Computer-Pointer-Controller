@@ -194,6 +194,8 @@ class Visualize:
                 f.write('Total pipeline inference time '+ str(total_inference_time)+'\n')
                 f.write('Frames processed per seconds ' + str(fps)+'\n')
                 f.write('Total models load time ' + str(self.models_load_time)+'\n')
+            if total_inference_time == 50.4:
+                break
         self.feed.close
         # Release resources
         log.info(msg= 'Frame processing ends')

@@ -30,18 +30,25 @@ class FaceDetection(Model):
         assert image.shape[1] == 3
 
         input_dict={self.input_blob:image}
-        infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
-        if self.net.requests[0].wait(-1) == 0:
-            res = infer_request_handle.outputs[self.output_blob]
-            output_data = res[0][0]
-            rois = []
-            for _, proposal in enumerate(output_data):
-                if proposal[2] > 0.5:
-                    xmin = np.int(width * proposal[3])
-                    ymin = np.int(height * proposal[4])
-                    xmax = np.int(width * proposal[5])
-                    ymax = np.int(height * proposal[6])
-                    rois.append([xmin,ymin,xmax,ymax])
+        
+        #------async inference ---
+        # infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
+        # if self.net.requests[0].wait(-1) == 0:
+        #     res = infer_request_handle.outputs[self.output_blob]
+        
+        # -----sync inference ----
+        res = self.net.infer(input_dict)
+        res = res[self.output_blob]
+    
+        output_data = res[0][0]
+        rois = []
+        for _, proposal in enumerate(output_data):
+            if proposal[2] > 0.5:
+                xmin = np.int(width * proposal[3])
+                ymin = np.int(height * proposal[4])
+                xmax = np.int(width * proposal[5])
+                ymax = np.int(height * proposal[6])
+                rois.append([xmin,ymin,xmax,ymax])
         return rois
 
     def preprocess_output(self, image, rois):
