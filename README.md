@@ -116,48 +116,41 @@ Models load time and inference time were performed on two different hardware. Th
 Below are different scenarios and their respective results.
 
     1. Scenario 1: All models perfomed inference on CPU    
+    
+    Sample command executed as per below;
 
-Sample command executed as per below;
+    ```
+    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+    ```
 
-```
-python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-```
-
-Results shown that when pipeline process executed within 11 seconds, frames processed per second with a batch of 2 was 7.18. And total time taken to load all models was 0.3132 seconds.
+    Results shown that when pipeline process executed within 11 seconds, frames processed per second with a batch of 2 was 7.18. And total time taken to load all models was 0.3132 seconds.
 
 
     2. Scenario 2: All models performed inference on GPU
+    Sample command executed;
 
-Sample command executed;
+    ```
+    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose --output_path 'results'
+    ```
 
-```
-python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose --output_path 'results'
-```
-
-Results shown that when pipeline process executed within 13.14 seconds, frames processed per second with a batch of 2 was 7.238. And total time taken to load all models was 46.38 seconds.
-So it was evident that IGPUs takes longer load time than CPU.
+    Results shown that when pipeline process executed within 13.14 seconds, frames processed per second with a batch of 2 was 7.238. And total time taken to load all models was 46.38 seconds.
+    So it was evident that IGPUs takes longer load time than CPU.
 
 Another benchmark tests were done on multiple precisions. Below are the findings of the three main precisions used for each models.
 
     1. Scenario 1: All models with precisions FP32 on CPU
-
-Sample command executed as per below;
-
-```
-python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-```
-
-Results shown that when pipeline process executed within 42.3 seconds, frames processed per second with a batch of 2 was 7.39. And total time taken to load all models was 0.3612 seconds.
+    Sample command executed as per below;
+    ```
+    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+    ```
+    Results shown that when pipeline process executed within 42.3 seconds, frames processed per second with a batch of 2 was 7.39. And total time taken to load all models was 0.3612 seconds.
 
     2. Scenario 2: All models with precision FP16 on CPU
-
-Sample command executed as per below
-
-```
-python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-```
-
-Results shown that when pipeline process executed within 23.8 seconds, frames processed per second with a batch of 2 was 7.35. And total time taken to load all models was 0.3471 seconds.
+    Sample command executed as per below
+    ```
+    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+    ```
+    Results shown that when pipeline process executed within 23.8 seconds, frames processed per second with a batch of 2 was 7.35. And total time taken to load all models was 0.3471 seconds.
 
 ## Results
 *TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
