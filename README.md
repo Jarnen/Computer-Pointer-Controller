@@ -172,5 +172,14 @@ This is where you can provide information about the stand out suggestions that y
 ### Async Inference
 If you have used Async Inference in your code, benchmark the results and explain its effects on power and performance of your project.
 
+| Hardware | Inference Type | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second | Batch Size |
+|----------|----------------|----------------------------|-----------------------------------|-------------------|------------|
+| CPU      | synchronous    | 0.321307897567749          | 50.4                              | 4.940476190476191 | 2          |
+| CPU      | asynchronous   | 0.3363492488861084         | 50.4                              | 4.940476190476191 | 2          |
+| GPU      | synchronous    | 43.38682150840759          | 50.4                              | 4.940476190476191 | 2          |
+| GPU      | asynchronous   | 41.723883867263794         | 50.4                              | 4.940476190476191 | 2          |
+| CPU      | asynchronous   | 0.3512227535247803         | 50.4                              | 9.880952380952381 | 1          |
+| CPU      | synchronous    | 0.35878992080688477        | 50.4                              | 9.880952380952381 | 1          |
+
 ### Edge Cases
 There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
