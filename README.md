@@ -108,7 +108,12 @@ For help on which arguments to use, execute the below command;
 ## Benchmarks
 *TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
 
-Models load time and inference time were performed on two different hardware. They were the intergrated GPU - GeForce MX150/PCIe/SSE2, and CPU - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8. Here are different scenarios and their respective results.
+Models load time and inference time were performed on two different hardware. They are;
+    
+    1. Intergrated GPU - GeForce MX150/PCIe/SSE2, and 
+    2. CPU - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8. 
+
+Below are different scenarios and their respective results.
 
     1. Scenario 1: All models perfomed inference on CPU    
 
@@ -130,7 +135,6 @@ python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-000
 ```
 
 Results shown that when pipeline process executed within 13.14 seconds, frames processed per second with a batch of 2 was 7.238. And total time taken to load all models was 46.38 seconds.
-
 So it was evident that IGPUs takes longer load time than CPU.
 
 Another benchmark tests were done on multiple precisions. Below are the findings of the three main precisions used for each models.
