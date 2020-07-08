@@ -181,5 +181,8 @@ If you have used Async Inference in your code, benchmark the results and explain
 | CPU      | asynchronous   | 0.3512227535247803         | 50.4                              | 9.880952380952381 | 1          |
 | CPU      | synchronous    | 0.35878992080688477        | 50.4                              | 9.880952380952381 | 1          |
 
+With the results as per shown in the table above, there was not much difference seen in the inference type. However, processing more batch of frames reduces the time taken to process frames per second.
+
 ### Edge Cases
 There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
+
