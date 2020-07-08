@@ -186,3 +186,12 @@ With the results as per shown in the table above, there was not much difference 
 ### Edge Cases
 There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
 
+#### Multiple People Case
+To overcome this edge case scenario, I have allowed for multiple faces to be detected but only the first face detected is being selected. Only the first face is detected and allowed through the pipeline for further inference of landmarks, head pose angles estimation and gaze estimation. All other faces detected are ignored.
+
+#### Lighting Changes Case
+In low lighting situations, face cannot be detected and hence causes the inference pipeline to break. I tried to overcome this by applying brightness and contrast to the frame captured. Also another option I used was to convert image to LAB Color model and splitting the LAB image to different channels, applying CLAHE to L-channel, merged the CLAHE enhanced L-channel. Refer to the utils.py file lines 126 to 150 for these two options. I then apply either one of these in the main.py file at line 182.
+
+Another option was to install a third party software like Gucview (on Linux) to enhance the camera to detect persons in low lighting scenarios.
+    
+
