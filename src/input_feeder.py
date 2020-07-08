@@ -12,6 +12,7 @@ from numpy import ndarray
 from numpy import hstack
 import logging as log
 
+
 class InputFeeder:
     def __init__(self, input_type, input_file, batch_size):
         '''
@@ -41,7 +42,7 @@ class InputFeeder:
         while True:
             for retVal in range(self.batch_size):
                 retVal, frame=self.cap.read()
-
+                
                 if self.input_type=='cam':
                     # mirror the frame
                     frame = cv2.flip(frame,1)
@@ -50,7 +51,8 @@ class InputFeeder:
                     log.info("End of frame")
                     break
                     keypressed = cv2.waitKey(60) 
-
+                
+                
             yield frame
 
     def close(self):

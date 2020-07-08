@@ -10,6 +10,7 @@ from face_detection import FaceDetection
 from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
 from gaze_estimation import GazeEstimation
+from utils import enhance_frame, increase_bright_contrast
 import time
 import os
 
@@ -62,7 +63,7 @@ def build_argparser():
                        help="(optional) Probability threshold for face detections" \
                        "(default: %(default)s)")
     
-    parser.add_argument('-bs','--batch_size', metavar='[1..10]', type=float, default=2,
+    parser.add_argument('-bs','--batch_size', metavar='[1..10]', type=int, default=2,
                        help="(optional) Batch size for input feeder." \
                        "(default: %(default)s)")
 
@@ -115,8 +116,8 @@ class Visualize:
         self.output_path = args.output_path
         
     def process_pipeline(self, frame):
-        assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
-        assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
+        #assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
+        #assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
         pipeline_process_start = time.time()
         self.rois = self.face_detector.predict(frame)
         self.face = self.face_detector.preprocess_output(frame, self.rois)
@@ -174,11 +175,13 @@ class Visualize:
     
     def run(self, args):
         self.feed.load_data()
-        log.info(msg= 'Frame processing starts')
+        
         counter=0
         start_pipeline_inference_time=time.time()
         for frame in self.feed.next_batch():
             counter+=1
+            #enhanced_frame  = enhance_frame(frame) / increase_bright_contrast(frame)
+            log.info(msg= 'Frame processing starts')
             x, y = self.process_pipeline(frame)
             self.mouse_controller.move(x,y)
             self.display_results(frame)

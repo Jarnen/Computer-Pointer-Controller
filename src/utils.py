@@ -96,3 +96,56 @@ def get_center(frame):
     cY = height/2
 
     return (cX, cY)
+
+
+def get_sparse_neighbor(p: int, n: int, m: int):
+    """Returns a dictionnary, where the keys are index of 4-neighbor of `p` in the sparse matrix,
+       and values are tuples (i, j, x), where `i`, `j` are index of neighbor in the normal matrix,
+       and x is the direction of neighbor.
+
+    Arguments:
+        p {int} -- index in the sparse matrix.
+        n {int} -- number of rows in the original matrix (non sparse).
+        m {int} -- number of columns in the original matrix.
+
+    Returns:
+        dict -- dictionnary containing indices of 4-neighbors of `p`.
+    """
+    i, j = p // m, p % m
+    d = {}
+    if i - 1 >= 0:
+        d[(i - 1) * m + j] = (i - 1, j, 0)
+    if i + 1 < n:
+        d[(i + 1) * m + j] = (i + 1, j, 0)
+    if j - 1 >= 0:
+        d[i * m + j - 1] = (i, j - 1, 1)
+    if j + 1 < m:
+        d[i * m + j + 1] = (i, j + 1, 1)
+    return d
+
+def enhance_frame(image):
+    #-----Converting image to LAB Color model
+    lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+
+    #Splitting the LAB image to different channels
+    l, a, b = cv2.split(lab)
+
+    #Applying CLAHE to L-channel
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+    cl = clahe.apply(l)
+    
+    #Merge the CLAHE enhanced L-channel with the a and b channel
+    limg = cv2.merge((cl,a,b))
+    
+    #Converting image from LAB Color model to RGB model
+    final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
+    return final
+
+def increase_bright_contrast(frame):
+    alpha = 1.5 # Contrast control (1.0-3.0)
+    beta = 0 # Brightness control (0-100)
+    adjusted = cv2.convertScaleAbs(frame, alpha=alpha, beta=beta)
+
+    return adjusted
+
