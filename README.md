@@ -116,7 +116,7 @@ Models load time and inference time were performed on two different hardware. Th
 Below are different scenarios and their respective results.
 
     1. Scenario 1: All models perfomed inference on CPU    
-    
+
     Sample command executed as per below;
 
     ```
@@ -154,6 +154,14 @@ Another benchmark tests were done on multiple precisions. Below are the findings
 
 ## Results
 *TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
+
+Below is the table showing results of the different scenarios performed in pipeline processing of the frames.
+# Markdown Table Formatter
+| Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time | Frames Per Second | Batch Size |
+|----------|-------------------|----------------------------|-------------------------------|-------------------|------------|
+| CPU      | FP32              | 0.3132                     | 11                            | 7.18              | 2          |
+
+
 
 ## Stand Out Suggestions
 This is where you can provide information about the stand out suggestions that you have attempted.
