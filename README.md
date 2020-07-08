@@ -133,8 +133,7 @@ Below are different scenarios and their respective results.
     python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose --output_path 'results'
     ```
 
-    Results shown that when pipeline process executed within 13.14 seconds, frames processed per second with a batch of 2 was 7.238. And total time taken to load all models was 46.38 seconds.
-    So it was evident that IGPUs takes longer load time than CPU.
+    Results shown that when pipeline process executed within 16.15 seconds, frames processed per second with a batch of 2 was 7.27. And total time taken to load all models was 44.26 seconds.
 
 Another benchmark tests were done on multiple precisions. Below are the findings of the three main precisions used for each models.
 
@@ -150,18 +149,22 @@ Another benchmark tests were done on multiple precisions. Below are the findings
     ```
     python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
     ```
-    Results shown that when pipeline process executed within 23.8 seconds, frames processed per second with a batch of 2 was 7.35. And total time taken to load all models was 0.3471 seconds.
+    Results shown that when pipeline process executed within 17.2 seconds, frames processed per second with a batch of 2 was 7.26. And total time taken to load all models was 0.376 seconds.
 
 ## Results
 *TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
 
+### Results Table
 Below is the table showing results of the different scenarios performed in pipeline processing of the frames.
-# Markdown Table Formatter
-| Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time | Frames Per Second | Batch Size |
-|----------|-------------------|----------------------------|-------------------------------|-------------------|------------|
-| CPU      | FP32              | 0.3132                     | 11                            | 7.18              | 2          |
 
+| Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second | Batch Size |
+|----------|-------------------|----------------------------|-----------------------------------|-------------------|------------|
+| CPU      | FP32              | 0.3132                     | 11                                | 7.18              | 2          |
+| GPU      | FP32              | 44.68                      | 16.15                             | 7.27              | 2          |
+| CPU      | FP16              | 0.376                      | 17.2                              | 7.26              | 2          |
+| GPU      | FP16              | 43.88                      | 11.9                              | 7.227             | 2          |
 
+So it was evident that IGPUs takes longer load time than CPU.
 
 ## Stand Out Suggestions
 This is where you can provide information about the stand out suggestions that you have attempted.
