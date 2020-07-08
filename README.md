@@ -110,8 +110,10 @@ For help on which arguments to use, execute the below command;
 
 Models load time and inference time were performed on two different hardware. They were the intergrated GPU - GeForce MX150/PCIe/SSE2, and CPU - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8. Here are different scenarios and their respective results.
 
-    1. Scenario 1: All models perfomed inference on CPU
-    Sample command executed as per below;
+    1. Scenario 1: All models perfomed inference on CPU    
+
+Sample command executed as per below;
+
     ```
     python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
     ```
