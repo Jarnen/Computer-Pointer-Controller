@@ -11,6 +11,7 @@ from head_pose_estimation import HeadPoseEstimation
 from landmarks_detection import LandmarksDetection
 from gaze_estimation import GazeEstimation
 import time
+import os
 
 
 
@@ -60,6 +61,11 @@ def build_argparser():
     parser.add_argument('-t','--threshold', metavar='[0..1]', type=float, default=0.5,
                        help="(optional) Probability threshold for face detections" \
                        "(default: %(default)s)")
+    
+    parser.add_argument('-bs','--batch_size', metavar='[1..10]', type=float, default=2,
+                       help="(optional) Batch size for input feeder." \
+                       "(default: %(default)s)")
+
     parser.add_argument('-s','--speed', default='fast', choices=SPEED,
                        help="(required) Speed ('fast', 'medium','slow')for mouse movement" \
                        "(default: %(default)s)")
@@ -68,6 +74,8 @@ def build_argparser():
                        "(default: %(default)s)")
     parser.add_argument('--no_show', action='store_true',
                          help="(optional) Do not display output")
+    parser.add_argument('--output_path', default='results/',
+                        help="Path to the stats results file")
     parser.add_argument('-v', '--verbose', action='store_true',
                        help="(optional) Be more verbose")
     
@@ -100,10 +108,11 @@ class Visualize:
         self.models_load_time = time.time() - models_load_start
         log.info("All models loaded sucessfully in {} milliseconds.".format(self.models_load_time))
 
-        self.feed = InputFeeder(args.input_type, args.input_file)
+        self.feed = InputFeeder(args.input_type, args.input_file, args.batch_size)
         log.info("Input feeder initialised")
 
         self.show_results = not args.no_show
+        self.output_path = args.output_path
         
     def process_pipeline(self, frame):
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
@@ -166,11 +175,23 @@ class Visualize:
     def run(self, args):
         self.feed.load_data()
         log.info(msg= 'Frame processing starts')
+        counter=0
+        start_pipeline_inference_time=time.time()
         for frame in self.feed.next_batch():
+            counter+=1
             x, y = self.process_pipeline(frame)
             self.mouse_controller.move(x,y)
             self.display_results(frame)
-            self.feed.close
+
+            total_time=time.time()-start_pipeline_inference_time
+            total_inference_time=round(total_time, 1)
+            fps=counter/total_inference_time
+            
+            with open(os.path.join(self.output_path, 'stats.txt'), 'w') as f:
+                f.write('Total pipeline inference time '+ str(total_inference_time)+'\n')
+                f.write('Frames processed per seconds ' + str(fps)+'\n')
+                f.write('Total models load time ' + str(self.models_load_time)+'\n')
+        self.feed.close
         # Release resources
         log.info(msg= 'Frame processing ends')
         cv2.destroyAllWindows()
