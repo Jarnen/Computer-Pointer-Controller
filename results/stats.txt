@@ -1,0 +1,3 @@
+Total pipeline inference time 23.8
+Frames processed per seconds 7.352941176470588
+Total models load time 0.3471252918243408
