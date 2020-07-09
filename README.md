@@ -32,7 +32,8 @@ The bin folder contains the demo video file, the models folder contains all the 
  ┣ 📂cpc-project-env
  ┃ ┣ 📂bin
  ┃   ┣ 📜activate
- ┃  
+ ┃   ┣ 📜activate.fish
+ ┃    
  ┣ 📂models
  ┃ ┗ 📂intel
  ┃   ┣ 📂face-detection-adas-0001
@@ -40,26 +41,26 @@ The bin folder contains the demo video file, the models folder contains all the 
  ┃   ┃ ┃ ┣ 📜face-detection-adas-0001.bin
  ┃   ┃ ┃ ┗ 📜face-detection-adas-0001.xml
  ┃   ┃ ┗ 📂FP32
- ┃   ┃ ┃ ┣ 📜face-detection-adas-0001.bin
- ┃   ┃ ┃ ┗ 📜face-detection-adas-0001.xml
+ ┃   ┃   ┣ 📜face-detection-adas-0001.bin
+ ┃   ┃   ┗ 📜face-detection-adas-0001.xml
  ┃   ┣ 📂face-detection-adas-binary-0001
  ┃   ┃ ┗ 📂INT1
- ┃   ┃ ┃ ┣ 📜face-detection-adas-binary-0001.bin
- ┃   ┃ ┃ ┗ 📜face-detection-adas-binary-0001.xml
+ ┃   ┃   ┣ 📜face-detection-adas-binary-0001.bin
+ ┃   ┃   ┗ 📜face-detection-adas-binary-0001.xml
  ┃   ┣ 📂gaze-estimation-adas-0002
  ┃   ┃ ┣ 📂FP16
  ┃   ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
  ┃   ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
  ┃   ┃ ┗ 📂FP32
- ┃   ┃ ┃ ┣ 📜gaze-estimation-adas-0002.bin
- ┃   ┃ ┃ ┗ 📜gaze-estimation-adas-0002.xml
+ ┃   ┃   ┣ 📜gaze-estimation-adas-0002.bin
+ ┃   ┃   ┗ 📜gaze-estimation-adas-0002.xml
  ┃   ┣ 📂head-pose-estimation-adas-0001
  ┃   ┃ ┣ 📂FP16
  ┃   ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
  ┃   ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
  ┃   ┃ ┗ 📂FP32
- ┃   ┃ ┃ ┣ 📜head-pose-estimation-adas-0001.bin
- ┃   ┃ ┃ ┗ 📜head-pose-estimation-adas-0001.xml
+ ┃   ┃   ┣ 📜head-pose-estimation-adas-0001.bin
+ ┃   ┃   ┗ 📜head-pose-estimation-adas-0001.xml
  ┃   ┗ 📂landmarks-regression-retail-0009
  ┃     ┣ 📂FP16
  ┃     ┃ ┣ 📜landmarks-regression-retail-0009.bin
@@ -67,7 +68,9 @@ The bin folder contains the demo video file, the models folder contains all the 
  ┃     ┗ 📂FP32
  ┃       ┣ 📜landmarks-regression-retail-0009.bin
  ┃       ┗ 📜landmarks-regression-retail-0009.xml
- ┣ 📂src
+ ┣ 📂results
+ ┃ ┗ 📜stats.txt
+ ┣ 📂src  
  ┃ ┣ 📜face_detection.py
  ┃ ┣ 📜gaze_estimation.py
  ┃ ┣ 📜head_pose_estimation.py
@@ -80,7 +83,8 @@ The bin folder contains the demo video file, the models folder contains all the 
  ┃ ┗ 📜utils.py
  ┣ 📜README.md
  ┣ 📜cpc_image.png
- ┗ 📜requirements.txt
+ ┣ 📜requirements.txt
+ ┗ 📜vtune_cpu_script.sh
 ```
 
 ## Demo
@@ -248,4 +252,3 @@ Another option was to install a third party software like Gucview (on Linux) to 
     3. https://www.learnopencv.com/rotation-matrix-to-euler-angles/
     4. https://towardsdatascience.com/image-enhancement-techniques-using-opencv-and-python-9191d5c30d45
     5. http://www.techytalk.info/webcam-settings-control-ubuntu-linux/
-    
