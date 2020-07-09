@@ -113,49 +113,53 @@ Models load time and inference time were performed on two different hardware. Th
     1. Intergrated GPU - GeForce MX150/PCIe/SSE2, and 
     2. CPU - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8. 
 
-Below are different scenarios and their respective results.
+Below are different scenarios.
 
-    1. Scenario 1: All models perfomed inference on CPU    
+    1. Scenario 1: CPU Hardware used for all Models 
+    
+Sample command executed;
 
-    Sample command executed as per below;
-
-    ```
-    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-    ```
-
-    Results shown that when pipeline process executed within 11 seconds, frames processed per second with a batch of 2 was 7.18. And total time taken to load all models was 0.3132 seconds.
+```
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+```
+Refer to the results table in the Results section for detailed results.
 
 
-    2. Scenario 2: All models performed inference on GPU
-    Sample command executed;
+    2. Scenario 2: GPU Hardware used for all Models
+    
+Sample command executed;
 
-    ```
-    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose --output_path 'results'
-    ```
+```
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose --output_path 'results'
+```
+Refer to the results table in the Results section for detailed results.
 
-    Results shown that when pipeline process executed within 16.15 seconds, frames processed per second with a batch of 2 was 7.27. And total time taken to load all models was 44.26 seconds.
+Another benchmark tests were done on multiple precisions. Below are the different scenarios.
 
-Another benchmark tests were done on multiple precisions. Below are the findings of the three main precisions used for each models.
+    1. Scenario 1: Presicion FP32 and CPU Hardware used for all Models
+    
+Sample command executed;
+```
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+```
 
-    1. Scenario 1: All models with precisions FP32 on CPU
-    Sample command executed as per below;
-    ```
-    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-    ```
-    Results shown that when pipeline process executed within 42.3 seconds, frames processed per second with a batch of 2 was 7.39. And total time taken to load all models was 0.3612 seconds.
+Refer to results table in the Results table for detailed results.
 
-    2. Scenario 2: All models with precision FP16 on CPU
-    Sample command executed as per below
-    ```
-    python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
-    ```
-    Results shown that when pipeline process executed within 17.2 seconds, frames processed per second with a batch of 2 was 7.26. And total time taken to load all models was 0.376 seconds.
+    2. Scenario 2: Precision FP16 and CPU Hardware used for all Models
+
+Sample command executed;
+
+```
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --output_path 'results'
+```
+
+Refer to results table in the Results table for detailed results.
 
 ## Results
 *TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
 
 ### Results Table
-Below is the table showing results of the different scenarios performed in pipeline processing of the frames.
+Below is the table showing results of the different scenarios performed in pipeline processing of the frames. (Refer lines 200/201 of main.py for breakpoint)
 
 | Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second  | Batch Size |
 |----------|-------------------|----------------------------|-----------------------------------|--------------------|------------|
@@ -168,7 +172,9 @@ Below is the table showing results of the different scenarios performed in pipel
 | CPU      | FP16              | 0.41742587089538574        | 0.7670192718505859                | 32.59370516164809  | 1          |
 | CPU      | FP16              | 0.3760707378387451         | 0.7119126319885254                | 35.1166686425687   | 2          |
 
-So it was evident that IGPUs takes longer load time than CPU.
+From the above results, we concluded as per below;
+    1. CPU loads models faster than GPU.
+    2. Higher precisions (FP32) takes longer processing time than lower precisions (FP16).
 
 ## Stand Out Suggestions
 This is where you can provide information about the stand out suggestions that you have attempted.
@@ -180,7 +186,7 @@ Here is the sample command executed to get the results.
 ```
 python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --batch_size 2
 ```
-Below are the results of the different inference type and batch sizes used.
+Below are the results of the different inference types and batch sizes used for frames breakpoint at 25 frames. (Refer lines 202/203 of main.py)
 
 | Hardware | Inference Type | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second  | Batch Size |
 |----------|----------------|----------------------------|-----------------------------------|--------------------|------------|
@@ -193,19 +199,21 @@ Below are the results of the different inference type and batch sizes used.
 | GPU      | synchronous    | 42.34746384620666          | 25.03768563270569                 | 17.57350924740609  | 1          |
 | GPU      | asynchronous   | 42.30827450752258          | 25.046454906463623                | 17.806911264112784 | 1          |
 
-
-
-With the results as per shown in the table above, there was not much difference seen in the inference type. However, processing more batch of frames reduces the time taken to process frames per second.
+From the results above, it can be concluded that;
+    1. When using CPU hardware, synchronous inference process more frames per second than asychronous inference.
+    2. When using GPU hardware, asynchronous inference process more frames per second than synchronous infernce. 
 
 ### Edge Cases
 There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
 
 #### Multiple People Case
-To overcome this edge case scenario, I have allowed for multiple faces to be detected but only the first face detected is being selected. Only the first face is detected and allowed through the pipeline for further inference of landmarks, head pose angles estimation and gaze estimation. All other faces detected are ignored.
+When multiple people are detected, the processing pipeline breaks because other models like landmarks require input from only one face. To overcome this edge case scenario, I have allowed for multiple faces to be detected but only the first face detected selected for further inferencing. The first face is detected and allowed through the pipeline for further inference of landmarks, head pose angles estimation and gaze estimation. All other faces detected are ignored. Refer below the snippet of code from face_detection.py that does that;
+```
+cropped_roi = image[rois[0][1]: rois[0][3], rois[0][0]:rois[0][2]]
+```
 
 #### Lighting Changes Case
-In low lighting situations, face cannot be detected and hence causes the inference pipeline to break. I tried to overcome this by applying brightness and contrast to the frame captured. Also another option I used was to convert image to LAB Color model and splitting the LAB image to different channels, applying CLAHE to L-channel, merged the CLAHE enhanced L-channel. Refer to the utils.py file lines 126 to 150 for these two options. I then apply either one of these in the main.py file at line 182.
+In low lighting situations, face cannot be detected and hence causes the inference pipeline to break. I tried to overcome this by applying brightness and contrast to the frame captured. Also another option I used was to convert image to LAB Color model and splitting the LAB image to different channels, applying CLAHE to L-channel, merged the CLAHE enhanced L-channel. Refer to the utils.py file lines 126 to 150 for these two options. I then apply either one of these in the main.py file at line 186. 
 
-Another option was to install a third party software like Gucview (on Linux) to enhance the camera to detect persons in low lighting scenarios.
-    
+Another option was to install a third party software like Gucview (on Linux) to enhance the camera to detect persons in low lighting scenarios. I have also done some research on other options like Dual Illumination Estimation for Robust Exposure Correction and Low-light Image Enhancement via Illumination Map Estimation and will apply later to this project. Refer to links in references for these.
 
