@@ -96,14 +96,36 @@ python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/
 ```
 python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'GPU' --device_lm 'GPU' --device_ge 'GPU' --device_hp 'GPU'  --verbose
 ```
-For help on which arguments to use, execute the below command;
-```
-        python3 src/main.py --help
-```
 
 ## Documentation
 *TODO:* Include any documentation that users might need to better understand your project code. For instance, this is a good place to explain the command line arguments that your project supports.
 
+Below are the command line arguments needed and there brief use case. 
+```
+    '-i', '--input_type', - where you specify the type of input. Can be a 'cam' for 'video'.
+    '-f', '--input_file', - where you specify the path to the input file. No need to specify this if you are using 'cam' as an input type.
+    '-m_fd', metavar="PATH", - where you specify the path to the Face Detection model XML file.
+    '-m_lm', metavar="PATH", - where you specify the path to the Landmarks Detection model XML file.
+    '-m_hp', metavar="PATH", - where you specify the path to the Pose Estimation model XML file.
+    '-m_ge', metavar="PATH", - where you specify the Path to the Gaze Estimation model XML file.
+    '-d_fd', choices=DEVICE_TYPES, - Target device for the Face Detection model.
+    '-d_lm', choices=DEVICE_TYPES, - Target device for the Landmarks Detection model.
+    '-d_hp', choices=DEVICE_TYPES, - Target device for the Head Pose detection model.
+    '-d_ge', choices=DEVICE_TYPES, - Target device for the Gace Estimation model.
+    '-t','--threshold', metavar='[0..1]', - Probability threshold for face detections.
+    '-bs','--batch_size', metavar='[1..10]', - Batch size for input feeder.
+    '-s','--speed', choices=SPEED, - Speed ('fast', 'medium','slow')for mouse movement.
+    '-p','--precision', choices=PRECISION, - Speed ('high', 'medium','low')for mouse movement.
+    '--no_show', action='store_true', - Option for Do not display output results from the models")
+    '--output_path', default='results/', - Path to the stats results file.
+    '-v', '--verbose', - Option to Be more verbose. That is for logs to display more details.
+
+```
+
+For help on which arguments to use, execute the below command;
+```
+        python3 src/main.py --help
+```
 
 ## Benchmarks
 *TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
@@ -173,6 +195,7 @@ Below is the table showing results of the different scenarios performed in pipel
 | CPU      | FP16              | 0.3760707378387451         | 0.7119126319885254                | 35.1166686425687   | 2          |
 
 From the above results, we concluded as per below;
+
     1. CPU loads models faster than GPU.
     2. Higher precisions (FP32) takes longer processing time than lower precisions (FP16).
 
@@ -200,6 +223,7 @@ Below are the results of the different inference types and batch sizes used for 
 | GPU      | asynchronous   | 42.30827450752258          | 25.046454906463623                | 17.806911264112784 | 1          |
 
 From the results above, it can be concluded that;
+
     1. When using CPU hardware, synchronous inference process more frames per second than asychronous inference.
     2. When using GPU hardware, asynchronous inference process more frames per second than synchronous infernce. 
 
@@ -217,3 +241,11 @@ In low lighting situations, face cannot be detected and hence causes the inferen
 
 Another option was to install a third party software like Gucview (on Linux) to enhance the camera to detect persons in low lighting scenarios. I have also done some research on other options like Dual Illumination Estimation for Robust Exposure Correction and Low-light Image Enhancement via Illumination Map Estimation and will apply later to this project. Refer to links in references for these.
 
+## References
+
+    1. https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python
+    2. http://www.cs.cmu.edu/~16385/s17/Slides/11.1_Camera_matrix.pdf
+    3. https://www.learnopencv.com/rotation-matrix-to-euler-angles/
+    4. https://towardsdatascience.com/image-enhancement-techniques-using-opencv-and-python-9191d5c30d45
+    5. http://www.techytalk.info/webcam-settings-control-ubuntu-linux/
+    
