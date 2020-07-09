@@ -29,7 +29,7 @@ def build_argparser():
     parser = ArgumentParser()
 
     parser.add_argument('-i', '--input_type', metavar='PATH', default=None,
-                                  help="(Optional) Path to the input video " \
+                                  help="(Optional) Specify the type of input " \
                                       "('cam' for camera, default)")
     parser.add_argument('-f', '--input_file', metavar='PATH', default=None,
                                    help="(optional) Path to the input file " \
@@ -114,10 +114,14 @@ class Visualize:
 
         self.show_results = not args.no_show
         self.output_path = args.output_path
+
+        self.total_processing_time = 0
+        self.frames_counter = 0
         
     def process_pipeline(self, frame):
-        #assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
-        #assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
+        assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
+        assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
+        
         pipeline_process_start = time.time()
         self.rois = self.face_detector.predict(frame)
         self.face = self.face_detector.preprocess_output(frame, self.rois)
@@ -127,7 +131,10 @@ class Visualize:
         self.head_pose_angles = self.head_pose_estimation.predict(self.face)
         
         x, y = self.gaze_estimation.predict(self.right_eye_image, self.left_eye_image, self.head_pose_angles)
+        
         self.pipeline_processtime = time.time() - pipeline_process_start
+        self.total_processing_time += self.pipeline_processtime
+        self.frames_counter += 1
         log.info("Completed frame pipleline process in {} seconds. ".format(self.pipeline_processtime))
 
         return x, y       
@@ -175,27 +182,26 @@ class Visualize:
     
     def run(self, args):
         self.feed.load_data()
-        
-        counter=0
-        start_pipeline_inference_time=time.time()
         for frame in self.feed.next_batch():
-            counter+=1
             #enhanced_frame  = enhance_frame(frame) / increase_bright_contrast(frame)
             log.info(msg= 'Frame processing starts')
             x, y = self.process_pipeline(frame)
+            
             self.mouse_controller.move(x,y)
             self.display_results(frame)
 
-            total_time=time.time()-start_pipeline_inference_time
-            total_inference_time=round(total_time, 1)
-            fps=counter/total_inference_time
-            
+            fps = self.frames_counter/self.total_processing_time
             with open(os.path.join(self.output_path, 'stats.txt'), 'w') as f:
-                f.write('Total pipeline inference time '+ str(total_inference_time)+'\n')
+                f.write('Total pipeline inference time '+ str(self.total_processing_time)+'\n')
                 f.write('Frames processed per seconds ' + str(fps)+'\n')
                 f.write('Total models load time ' + str(self.models_load_time)+'\n')
-            if total_inference_time == 50.4:
-                break
+
+            #---stop timer for benchmark async and sync infer---
+            # if self.total_processing_time >= 25.0:
+            #     break
+            # if self.frames_counter >= 25:
+            #     break
+
         self.feed.close
         # Release resources
         log.info(msg= 'Frame processing ends')

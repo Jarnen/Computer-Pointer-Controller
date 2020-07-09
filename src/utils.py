@@ -123,6 +123,7 @@ def get_sparse_neighbor(p: int, n: int, m: int):
         d[i * m + j + 1] = (i, j + 1, 1)
     return d
 
+#ref: https://towardsdatascience.com/image-enhancement-techniques-using-opencv-and-python-9191d5c30d45
 def enhance_frame(image):
     #-----Converting image to LAB Color model
     lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)

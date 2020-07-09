@@ -31,14 +31,14 @@ class GazeEstimation(Model):
         inputs = {'head_pose_angles': head_pose_angles, 'left_eye_image': left_eye_image, 'right_eye_image': right_eye_image}
 
         #----async inference----
-        # infer_request_handle = self.net.start_async(request_id=0, inputs=inputs)
-        # if self.net.requests[0].wait(-1) == 0:
-        #     result = infer_request_handle.outputs
-        #     x, y = self.preprocess_output(result)
+        infer_request_handle = self.net.start_async(request_id=0, inputs=inputs)
+        if self.net.requests[0].wait(-1) == 0:
+            result = infer_request_handle.outputs
+            x, y = self.preprocess_output(result)
 
         #----sync inference----
-        results = self.net.infer(inputs)
-        x, y = self.preprocess_output(results)   
+        # results = self.net.infer(inputs)
+        # x, y = self.preprocess_output(results)   
         
         return x, y  
  

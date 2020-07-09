@@ -27,14 +27,14 @@ class HeadPoseEstimation(Model):
 
         input_dict={self.input_blob:image}
         #----async inference ----
-        # infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
-        # if self.net.requests[0].wait(-1) == 0:
-        #     res = infer_request_handle.outputs
-        #     output = self.preprocess_output(res)
+        infer_request_handle = self.net.start_async(request_id=0, inputs=input_dict)
+        if self.net.requests[0].wait(-1) == 0:
+            res = infer_request_handle.outputs
+            output = self.preprocess_output(res)
 
         #----sync inference ----
-        res = self.net.infer(input_dict)
-        output = self.preprocess_output(res)
+        # res = self.net.infer(input_dict)
+        # output = self.preprocess_output(res)
         
         return output
 
