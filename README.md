@@ -157,12 +157,16 @@ Another benchmark tests were done on multiple precisions. Below are the findings
 ### Results Table
 Below is the table showing results of the different scenarios performed in pipeline processing of the frames.
 
-| Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second | Batch Size |
-|----------|-------------------|----------------------------|-----------------------------------|-------------------|------------|
-| CPU      | FP32              | 0.3132                     | 11                                | 7.18              | 2          |
-| GPU      | FP32              | 44.68                      | 16.15                             | 7.27              | 2          |
-| CPU      | FP16              | 0.376                      | 17.2                              | 7.26              | 2          |
-| GPU      | FP16              | 43.88                      | 11.9                              | 7.227             | 2          |
+| Hardware | Models Precisions | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second  | Batch Size |
+|----------|-------------------|----------------------------|-----------------------------------|--------------------|------------|
+| GPU      | FP32              | 42.085306882858276         | 1.3761012554168701                | 18.167267780325226 | 2          |
+| GPU      | FP16              | 43.26167893409729          | 0.9960892200469971                | 25.09815335499812  | 1          |
+| CPU      | FP16              | 0.366560697555542          | 0.7050163745880127                | 35.460169296931774 | 1          |
+| CPU      | FP32              | 0.328019380569458          | 0.760749101638794                 | 32.86234574072501  | 1          |
+| CPU      | FP32              | 0.324234962463378          | 0.7439463138580322                | 33.60457540323369  | 1          |
+| GPU      | FP32              | 42.11428737640381          | 1.3050618171691895                | 19.156180704319063 | 1          |
+| CPU      | FP16              | 0.41742587089538574        | 0.7670192718505859                | 32.59370516164809  | 1          |
+| CPU      | FP16              | 0.3760707378387451         | 0.7119126319885254                | 35.1166686425687   | 2          |
 
 So it was evident that IGPUs takes longer load time than CPU.
 
@@ -172,14 +176,24 @@ This is where you can provide information about the stand out suggestions that y
 ### Async Inference
 If you have used Async Inference in your code, benchmark the results and explain its effects on power and performance of your project.
 
-| Hardware | Inference Type | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second | Batch Size |
-|----------|----------------|----------------------------|-----------------------------------|-------------------|------------|
-| CPU      | synchronous    | 0.321307897567749          | 50.4                              | 4.940476190476191 | 2          |
-| CPU      | asynchronous   | 0.3363492488861084         | 50.4                              | 4.940476190476191 | 2          |
-| GPU      | synchronous    | 43.38682150840759          | 50.4                              | 4.940476190476191 | 2          |
-| GPU      | asynchronous   | 41.723883867263794         | 50.4                              | 4.940476190476191 | 2          |
-| CPU      | asynchronous   | 0.3512227535247803         | 50.4                              | 9.880952380952381 | 1          |
-| CPU      | synchronous    | 0.35878992080688477        | 50.4                              | 9.880952380952381 | 1          |
+Here is the sample command executed to get the results.
+```
+python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --batch_size 2
+```
+Below are the results of the different inference type and batch sizes used.
+
+| Hardware | Inference Type | Total Models Load Time (s) | Total Pipeline Inference Time (s) | Frames Per Second  | Batch Size |
+|----------|----------------|----------------------------|-----------------------------------|--------------------|------------|
+| CPU      | synchronous    | 0.3242354393005371         | 25.002384185791016                | 24.037707585565038 | 2          |
+| CPU      | asynchronous   | 0.33762550354003906        | 25.023040056228638                | 23.65819655284617  | 2          |
+| CPU      | synchronous    | 0.3262178897857666         | 25.010347604751587                | 39.02384786585592  | 1          |
+| CPU      | asynchronous   | 0.33506035804748535        | 25.02401304244995                 | 37.56391904069957  | 1          |
+| GPU      | asynchronous   | 42.54989671707153          | 25.017953634262085                | 17.66731230146182  | 2          |
+| GPU      | synchronous    | 41.91681599617004          | 25.028812408447266                | 17.659647321133953 | 2          |
+| GPU      | synchronous    | 42.34746384620666          | 25.03768563270569                 | 17.57350924740609  | 1          |
+| GPU      | asynchronous   | 42.30827450752258          | 25.046454906463623                | 17.806911264112784 | 1          |
+
+
 
 With the results as per shown in the table above, there was not much difference seen in the inference type. However, processing more batch of frames reduces the time taken to process frames per second.
 
