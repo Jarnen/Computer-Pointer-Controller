@@ -85,10 +85,7 @@ def build_argparser():
 class Visualize:
 
     def __init__(self, args):
-        """
-        Initialise the variables
-        
-        """
+        """ Initialise the class variables"""
         
         model_initialisation_start = time.time()
         self.face_detector = FaceDetection(args.m_fd, args.device_fd, args.threshold)
@@ -107,7 +104,7 @@ class Visualize:
         self.head_pose_estimation.load_model()
         self.gaze_estimation.load_model()
         self.models_load_time = time.time() - models_load_start
-        log.info("All models loaded sucessfully in {} milliseconds.".format(self.models_load_time))
+        log.info("All models loaded sucessfully in {} milliseconds.".format(int(round(self.models_load_time) * 1000)))
 
         self.feed = InputFeeder(args.input_type, args.input_file, args.batch_size)
         log.info("Input feeder initialised")
@@ -119,6 +116,8 @@ class Visualize:
         self.frames_counter = 0
         
     def process_pipeline(self, frame):
+        """ Performs pipeline inference on the frame and returns x,y coordinates of gaze direction. """
+
         assert len(frame.shape) == 3, "Expected input frame in (H, W, C) format"
         assert frame.shape[2] in [3, 4], "Expected BGR or BGRA input"
         

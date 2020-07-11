@@ -1,7 +1,4 @@
 # Computer Pointer Controller
-
-*TODO:* Write a short introduction to your project.
-
 This project demonstrates a computer pointer controller by implementing a pipeline of four different Intel's pretrained models. These models are face detection model, landmarks regression model, head pose estimation model and gaze estimation model. Refer below the list of the models;
 
         1. face-detection-adas-binary-0001
@@ -16,8 +13,6 @@ Format: ![Alt Text](url)
 
 
 ## Project Set Up and Installation
-*TODO:* Explain the setup procedures to run your project. For instance, this can include your project directory structure, the models you need to download and where to place them etc. Also include details about how to install the dependencies your project requires.
-
 This project comes together with it's virtual environment. Refer to the project structure below, the virtual environment is the cpc-project-env folder. Once you have downloaded this repository, change directory into it and run the command "source cpc-project-env/bin/activate" to activate the environment. 
 
 However, to run on your own environment, refer to the requirements.txt file for all the required software that are needed to be installed before executing. This project had been tested and executed on a Linux operating system with Intel's Openvino Toolkit 2020.1. The hardware used had an Intel Core i7 processor (8th Gen) with integrated GPU. 
@@ -88,8 +83,6 @@ The bin folder contains the demo video file, the models folder contains all the 
 ```
 
 ## Demo
-*TODO:* Explain how to run a basic demo of your model.
-
 Use the command line tool in Windows or terminal in Linux to execute the application. To run the application, change directory into the root folder and execute the following commands:
 
     1. Sample 1: Using CPU to run inference on the frames
@@ -102,8 +95,6 @@ python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/
 ```
 
 ## Documentation
-*TODO:* Include any documentation that users might need to better understand your project code. For instance, this is a good place to explain the command line arguments that your project supports.
-
 Below are the command line arguments needed and there brief use case. 
 ```
     '-i', '--input_type', - where you specify the type of input. Can be a 'cam' for 'video'.
@@ -132,8 +123,6 @@ For help on which arguments to use, execute the below command;
 ```
 
 ## Benchmarks
-*TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
-
 Models load time and inference time were performed on two different hardware. They are;
     
     1. Intergrated GPU - GeForce MX150/PCIe/SSE2, and 
@@ -182,8 +171,6 @@ python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP16/
 Refer to results table in the Results table for detailed results.
 
 ## Results
-*TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
-
 ### Results Table
 Below is the table showing results of the different scenarios performed in pipeline processing of the frames. (Refer lines 200/201 of main.py for breakpoint)
 
@@ -204,11 +191,7 @@ From the above results, we concluded as per below;
     2. Higher precisions (FP32) takes longer processing time than lower precisions (FP16).
 
 ## Stand Out Suggestions
-This is where you can provide information about the stand out suggestions that you have attempted.
-
 ### Async Inference
-If you have used Async Inference in your code, benchmark the results and explain its effects on power and performance of your project.
-
 Here is the sample command executed to get the results.
 ```
 python3 src/main.py -i 'cam'  -m_fd "models/intel/face-detection-adas-0001/FP32/face-detection-adas-0001" -m_lm "models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009" -m_hp "models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001" -m_ge "models/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002" --device_fd 'CPU' --device_lm 'CPU' --device_ge 'CPU' --device_hp 'CPU'  --verbose --batch_size 2
@@ -232,7 +215,7 @@ From the results above, it can be concluded that;
     2. When using GPU hardware, asynchronous inference process more frames per second than synchronous infernce. 
 
 ### Edge Cases
-There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Explain some of the edge cases you encountered in your project and how you solved them to make your project more robust.
+There will be certain situations that will break your inference flow. For instance, lighting changes or multiple people in the frame. Here are some of the edge cases you encountered in your project and how I have tried to solve them to make your project more robust.
 
 #### Multiple People Case
 When multiple people are detected, the processing pipeline breaks because other models like landmarks require input from only one face. To overcome this edge case scenario, I have allowed for multiple faces to be detected but only the first face detected selected for further inferencing. The first face is detected and allowed through the pipeline for further inference of landmarks, head pose angles estimation and gaze estimation. All other faces detected are ignored. Refer below the snippet of code from face_detection.py that does that;

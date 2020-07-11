@@ -1,7 +1,4 @@
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
+
 from openvino.inference_engine import IENetwork, IECore
 import cv2
 import logging as log
@@ -9,18 +6,16 @@ import numpy as np
 from model_module import Model
 
 class FaceDetection(Model):
-    '''
-    Class for the Face Detection Model.
-    '''
+    """Class for the Face Detection Model."""
 
     def __init__(self, model_name, device, threshold):
+        """ Initialise and loads the face detecion model"""
+
         super(FaceDetection, self).__init__(model_name, device, threshold)
 
     def predict(self, image):
-        '''
-        TODO: You will need to complete this method.
-        This method is meant for running predictions on the input image.
-        '''
+        """Performs inference on image and returns list of faces."""
+
         width = image.shape[1]
         height = image.shape[0]
         
@@ -52,10 +47,16 @@ class FaceDetection(Model):
         return rois
 
     def preprocess_output(self, image, rois):
-        '''
-        Crops the first face region of interest from the image and returns it.
-
-        '''
+        """
+        Crops first face from image and returns it.
+        
+        Args:
+        image   -- the ndarray image.
+        rois    -- the list of faces detected from inference.
+        
+        Returns:
+        cropped_roi -- cropped face region of interest.
+        """
         # assert len(rois) != 0, "No face detected in the frame."
         log.info(msg= '{} face/s detected..'.format(len(rois)))
 

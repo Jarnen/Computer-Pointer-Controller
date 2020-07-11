@@ -4,12 +4,6 @@ import cv2
 import logging as log
 from model_module import Model
 
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
-
-
 class GazeEstimation(Model):
     '''
     Class for the Face Detection Model.
@@ -19,7 +13,7 @@ class GazeEstimation(Model):
 
     def predict(self, left_eye_image, right_eye_image, head_pose_angles):
         """
-        Runs inference and returns x, y coordinates
+        Performs inference and returns x, y coordinates
 
         Args:
         inputs: left eye roi, right eye roi, head pose angles
@@ -44,7 +38,7 @@ class GazeEstimation(Model):
  
     def preprocess_input(self, frame):
         """
-        Returns processed eye image of shape [1,2,60,60]
+        Processed eye landmark and returns eye image [1,2,60,60]
 
         Arg:
         Eye frame extracted from landmarks

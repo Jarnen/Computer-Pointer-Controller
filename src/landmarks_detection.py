@@ -1,7 +1,4 @@
-'''
-This is a sample class for a model. You may choose to use it as-is or make any changes to it.
-This has been provided just to give you an idea of how to structure your model class.
-'''
+
 from openvino.inference_engine import IENetwork, IECore
 import cv2
 import numpy as np
@@ -13,13 +10,12 @@ class LandmarksDetection(Model):
     '''
 
     def __init__(self, model_name, device, threshold):
+        """ Initialise and loads the landmarks detecion model"""
         super(LandmarksDetection, self).__init__(model_name, device, threshold)
 
     def predict(self, image):
-        '''
-        TODO: You will need to complete this method.
-        This method is meant for running predictions on the input image.
-        '''
+        """Performs inference on face image and returns list of 5 landmarks points"""
+
         image = self.preprocess_input(image)
         assert len(image.shape) == 4, "Image shape should be [1, c, h, w]"
         assert image.shape[0] == 1
@@ -39,9 +35,16 @@ class LandmarksDetection(Model):
         return result
 
     def preprocess_output(self, image, result):
-        '''
-        Returns the (x,y) coordinates of right and left eye respectively
-        '''
+        """
+        Preprocess inference results and returns cropped and roi of left and right eye
+
+        Args:
+        image   --- cropped face image
+        results --- list of 5 landmarks points
+
+        Returns:
+        crop_right_eye, crop_left_eye, right_eye_roi, left_eye_roi
+        """
         assert result.size == 10, "Result passed in is not of size 10"
         
         iw, ih = image.shape[:-1]

@@ -15,11 +15,14 @@ import logging as log
 
 class InputFeeder:
     def __init__(self, input_type, input_file, batch_size):
-        '''
+        """
+        Initialise the Input feeder.
+
+        Args:
         input_type: str, The type of input. Can be 'video' for video file, 'image' for image file,
                     or 'cam' to use webcam feed.
         input_file: str, The file that contains the input image or video file. Leave empty for cam input_type.
-        '''
+        """
         self.batch_size = batch_size
 
         self.input_type=input_type
@@ -27,6 +30,8 @@ class InputFeeder:
             self.input_file=input_file
     
     def load_data(self):
+        """Loads the frame"""
+
         if self.input_type=='video':
             self.cap=cv2.VideoCapture(self.input_file)
         elif self.input_type=='cam':
@@ -35,10 +40,8 @@ class InputFeeder:
             self.cap=cv2.imread(self.input_file)
 
     def next_batch(self):
-        '''
-        Returns the next image from either a video file or webcam.
-        If input_type is 'image', then it returns the same image.
-        # '''
+        """Returns the next image from either a video file or webcam."""
+        
         while True:
             for retVal in range(self.batch_size):
                 retVal, frame=self.cap.read()
@@ -56,9 +59,8 @@ class InputFeeder:
             yield frame
 
     def close(self):
-        '''
-        Closes the VideoCapture.
-        '''
+        """Closes the VideoCapture."""
+        
         if not self.input_type=='image':
             self.cap.release()
 

@@ -13,9 +13,8 @@ class Model(object):
     Class for the Face Detection Model.
     '''
     def __init__(self, model_name, device, threshold):
-        '''
-        TODO: Use this to set your instance variables.
-        '''
+        """ Initialise instance variables"""
+        
         self.model_weights = model_name + '.bin'
         self.model_structure = model_name + '.xml'
         self.device = device
@@ -34,11 +33,8 @@ class Model(object):
         log.info('Model {} params initialised successfully'.format(self.model.name))
     
     def load_model(self):
-        '''
-        TODO: You will need to complete this method.
-        This method is for loading the model to the device specified by the user.
-        If your model requires any Plugins, this is where you can load them.
-        '''
+        """Loads the device model"""
+
         core = IECore()
         self.net = core.load_network(network=self.model, device_name=self.device, num_requests=1)
 
@@ -46,10 +42,8 @@ class Model(object):
 
 
     def preprocess_input(self, image):
-        '''
-        Before feeding the data into the model for inference,
-        you might have to preprocess it. This function is where you can do that.
-        '''
+        """Preprocess the input image"""
+
         log.info("Frame preprocessed successfully.")
         pr_image = cv2.resize(image, (self.input_shape[3], self.input_shape[2]))
         pr_image = pr_image.transpose((2,0,1)) #transpose layout from HWC to CHW
