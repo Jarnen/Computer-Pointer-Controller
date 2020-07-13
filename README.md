@@ -125,7 +125,7 @@ For help on which arguments to use, execute the below command;
 ## Benchmarks
 Models load time and inference time were performed on two different hardware. They are;
     
-    1. Intergrated GPU - GeForce MX150/PCIe/SSE2, and 
+    1. Intergrated GPU - UHD Graphics 620 (rev 07), and 
     2. CPU - Intel® Core™ i7-8550U CPU @ 1.80GHz × 8. 
 
 Below are different scenarios.
