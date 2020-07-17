@@ -81,16 +81,7 @@ def build_camera_matrix(camera_center, focal_length):
 #ref: https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python
 
 def get_center(frame):
-    # # convert image to grayscale image
-    # gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # # convert the grayscale image to binary image
-    # ret,thresh = cv2.threshold(gray_frame,127,255,0)
-    
-    # # calculate moments of binary image
-    # M = cv2.moments(thresh)
-    # # calculate x,y coordinate of center
-    # cX = int(M["m10"] / M["m00"])
-    # cY = int(M["m01"] / M["m00"])
+    """Returns center of the frame"""
     height, width = frame.shape[0:2]
     cX = width/2
     cY = height/2
