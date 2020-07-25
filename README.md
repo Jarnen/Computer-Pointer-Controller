@@ -6,7 +6,7 @@ This project demonstrates a computer pointer controller by implementing a pipeli
         3. head-pose-estimation-adas-0001
         4. landmarks-regression-retail-0009
 
-This project implements a pipeline of models input and outputs. It takes a video or camera feed as an input for the face detection model and outputs the face region of interests (roi). Landmarks regression model gets the face roi as an input and detects facial landmarks, right eye and left eye. Also the head pose estimation model takes the facial roi as input and detects the head pose angles, yaw, pitch and roll. The landmarks and the head pose angles are then fed to the gaze estimation model to predict the direction or cordinates of gaze by the person. These coordinates are then fed to the pyautogui to move the computer pointer to where the person is gazing.
+This project implements a pipeline of models' input and outputs. It takes a video or camera feed as an input for the face detection model and outputs the face region of interests (roi). Landmarks regression model gets the face roi as an input and detects facial landmarks, right eye and left eye. Also the head pose estimation model takes the facial roi as input and detects the head pose angles, yaw, pitch and roll. The landmarks and the head pose angles are then fed to the gaze estimation model to predict the direction or cordinates of gaze by the person. These coordinates are then fed to the pyautogui to move the computer pointer to where the person is gazing.
 
 ![Sample Image](cpc_image.png)
 Format: ![Alt Text](url)
